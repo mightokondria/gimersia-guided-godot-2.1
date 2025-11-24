@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=4 uid="uid://cs5nualgtfylk"]
+[gd_scene load_steps=9 format=4 uid="uid://cs5nualgtfylk"]
 
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="1_hgsim"]
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/tutorial_stage.gd" id="1_y1ian"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_y1ian"]
-[ext_resource type="PackedScene" uid="uid://caug2bx3ote41" path="res://Scenes/Objects/portal_area.tscn" id="4_tsfrv"]
+[ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="4_44wb4"]
+[ext_resource type="Texture2D" uid="uid://c0se137ewyk8n" path="res://Resources/Evironments/Aseets/finish.png" id="4_tsfrv"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tsfrv"]
 texture = ExtResource("1_hgsim")
@@ -241,6 +242,9 @@ physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_tsfrv")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y1ian"]
+size = Vector2(5, 15.5)
+
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
 script = ExtResource("1_y1ian")
 StartPosition = NodePath("StartPosition")
@@ -259,9 +263,15 @@ position = Vector2(27, 161)
 [node name="StartPosition" type="Marker2D" parent="."]
 position = Vector2(29, 39)
 
-[node name="PortalArea_1" parent="." instance=ExtResource("4_tsfrv")]
-position = Vector2(502, 48)
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(502, 64)
+script = ExtResource("4_44wb4")
+target_scene_path = "res://Scenes/Stages/tutorial_stage_2.tscn"
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D"]
+texture = ExtResource("4_tsfrv")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_y1ian")
 
 [connection signal="child_entered_tree" from="." to="player" method="_on_node_2d_child_entered_tree"]
-
-[editable path="PortalArea_1"]

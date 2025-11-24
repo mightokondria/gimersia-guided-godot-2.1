@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 signal create_after_image
-signal area_entered(body)
 
 # --- Variabel Gerakan ---
 const SPEED = 100.0

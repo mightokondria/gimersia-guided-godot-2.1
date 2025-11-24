@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=4 uid="uid://dd8764hawiiw0"]
+[gd_scene load_steps=9 format=4 uid="uid://dd8764hawiiw0"]
 
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/tutorial_stage.gd" id="1_2gld3"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="2_ckqpx"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="3_d5vp3"]
+[ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="4_d5vp3"]
+[ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="5_d5vp3"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tsfrv"]
 texture = ExtResource("2_ckqpx")
@@ -240,6 +242,9 @@ physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_tsfrv")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3a6iy"]
+size = Vector2(12, 12)
+
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
 script = ExtResource("1_2gld3")
 StartPosition = NodePath("StartPosition")
@@ -257,5 +262,17 @@ position = Vector2(27, 161)
 
 [node name="StartPosition" type="Marker2D" parent="."]
 position = Vector2(29, 39)
+
+[node name="Area2D_2" type="Area2D" parent="."]
+position = Vector2(501, 168)
+script = ExtResource("4_d5vp3")
+target_scene_path = "res://Scenes/Stages/tutorial_stage.tscn"
+
+[node name="Sprite2D" type="Sprite2D" parent="Area2D_2"]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("5_d5vp3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D_2"]
+shape = SubResource("RectangleShape2D_3a6iy")
 
 [connection signal="child_entered_tree" from="." to="player" method="_on_node_2d_child_entered_tree"]

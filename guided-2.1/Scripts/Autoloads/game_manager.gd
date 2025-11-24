@@ -7,7 +7,7 @@ var transition: Node = null
 var after_image_container: Node = null
 var is_transitioning: bool = false
 
-
+var next_spawn_id: String = ""   # tambahkan di top-level jika belum ada
 
 func _ready() -> void:
 	print("GameManager (autoload) ready. Waiting for level/player registration...")
@@ -43,20 +43,28 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 		tw.tween_callback(Callable(s, "queue_free"))
 	else:
 		push_warning("GameManager: no after_image_container set")
-		
-func change_scene(path: String) -> void:
+
+func request_change_scene(path: String, spawn_id: String = "") -> void:
 	if path == "" or not ResourceLoader.exists(path):
-		push_warning("GameManager: Invalid scene path " + str(path))
+		push_warning("GameManager: invalid path: " + str(path))
 		return
+		
+	next_spawn_id = spawn_id
 
+	# optional: freeze player and stop physics to avoid physics-callback removal issues
+	if player:
+		if player.has_method("freeze"):
+			player.freeze()
+		# stop player's physics to be safe
+		player.set_physics_process(false)
+
+	# do actual change deferred to avoid "Removing a CollisionObject during physics callback" error
+	call_deferred("_do_change_scene", path)
+
+func _do_change_scene(path: String) -> void:
 	print("GameManager: changing scene to", path)
-
-	# Optional: freeze player sebelum pindah
-	if player and player.has_method("freeze"):
-		player.freeze()
-
-	# Optional: fade out transition
-	# (kalau kamu punya fade di CanvasLayer)
-	# await do_fade_out()
-
 	get_tree().change_scene_to_file(path)
+	
+	
+func tanda():
+	print("tanda")
