@@ -42,6 +42,10 @@ var is_wall_jumping = false
 @onready var dash_cooldown_timer = $DashCooldownTimer
 
 
+func _ready():
+	if Engine.has_singleton("GameManager") or has_node("/root/GameManager"):
+		GameManager.register_player(self)
+
 func _physics_process(delta):
 	var on_floor = is_on_floor()
 	var on_wall = is_on_wall() 
@@ -198,6 +202,7 @@ func _on_dash_timer_timeout():
 		jump_count = 0
 
 func _on_after_image_timer_timeout():
+	print("Player: emitting create_after_image at ", global_position, " flip:", animated_sprite.flip_h)
 	emit_signal("create_after_image", animated_sprite.sprite_frames.get_frame_texture(animated_sprite.animation, animated_sprite.frame), global_position, animated_sprite.flip_h)
 
 func _on_animated_sprite_2d_animation_finished():

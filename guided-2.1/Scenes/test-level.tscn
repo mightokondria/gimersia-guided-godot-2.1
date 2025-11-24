@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=4 uid="uid://dosp6pne21u5g"]
 
-[ext_resource type="Script" uid="uid://dyjkc202xqxrm" path="res://Scripts/test_level.gd" id="1_fnxn0"]
+[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/level_controller.gd" id="1_23iai"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="1_u22sm"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="2_11oia"]
 [ext_resource type="Texture2D" uid="uid://c0se137ewyk8n" path="res://Resources/Evironments/Aseets/finish.png" id="4_47f6x"]
@@ -247,7 +247,7 @@ sources/0 = SubResource("TileSetAtlasSource_11oia")
 size = Vector2(10, 15)
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_fnxn0")
+script = ExtResource("1_23iai")
 
 [node name="player" parent="." instance=ExtResource("1_u22sm")]
 z_index = 1
@@ -281,6 +281,7 @@ texture = ExtResource("4_47f6x")
 position = Vector2(302, 63)
 shape = SubResource("RectangleShape2D_3d20r")
 
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
 [connection signal="create_after_image" from="player" to="." method="_on_player_create_after_image"]
 [connection signal="transition_midpoint_reached" from="transition" to="." method="_on_transition_transition_midpoint_reached"]
 [connection signal="body_entered" from="FinishArea" to="." method="_on_finish_area_body_entered"]
