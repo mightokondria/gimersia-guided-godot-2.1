@@ -36,6 +36,9 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 		s.texture = texture
 		s.global_position = spawn_pos
 		s.flip_h = is_flipped
+		
+		s.scale = Vector2(6, 6)
+		
 		after_image_container.add_child(s)
 		s.modulate = Color(0.5,0.7,1,0.7)
 		var tw = create_tween()

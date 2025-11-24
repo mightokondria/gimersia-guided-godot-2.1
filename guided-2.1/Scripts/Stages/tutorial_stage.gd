@@ -19,9 +19,9 @@ func _ready():
 	if Engine.has_singleton("GameManager") or has_node("/root/GameManager"):
 		GameManager.register_level(self)
 		
-	# 1) place player at spawn (if player is child of this level)
-	if player and StartPosition:
-		player.global_position = StartPosition.global_position
-		print("Level: moved player to StartPosition", StartPosition.global_position)
-	else:
-		print("Level: StartPosition or player not found; check node names")
+	## 1) place player at spawn (if player is child of this level)
+	#if player and StartPosition:
+		#player.global_position = StartPosition.global_position
+		#print("Level: moved player to StartPosition", StartPosition.global_position)
+	#else:
+		#print("Level: StartPosition or player not found; check node names")
