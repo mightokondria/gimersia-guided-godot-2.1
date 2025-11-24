@@ -1,6 +1,7 @@
 extends CharacterBody2D
 
 signal create_after_image
+signal area_entered(body)
 
 # --- Variabel Gerakan ---
 const SPEED = 100.0
@@ -31,6 +32,8 @@ var is_wall_sliding = false
 var is_double_jumping = false
 var is_wall_jumping = false
 
+var entered = false
+
 # --- Referensi Node Anak ---
 @onready var animated_sprite = $AnimatedSprite2D
 @onready var coyote_timer = $CoyoteTimer
@@ -45,11 +48,12 @@ var is_wall_jumping = false
 func _ready():
 	if Engine.has_singleton("GameManager") or has_node("/root/GameManager"):
 		GameManager.register_player(self)
+	add_to_group("player")
 
 func _physics_process(delta):
 	var on_floor = is_on_floor()
 	var on_wall = is_on_wall() 
-
+	
 	# --- Logika Gerakan Normal ---
 	if not is_dashing:
 		if controls_enabled:
@@ -239,3 +243,6 @@ func update_animation():
 		else:
 			if animated_sprite.animation != "idle":
 				animated_sprite.play("idle")
+
+	
+	

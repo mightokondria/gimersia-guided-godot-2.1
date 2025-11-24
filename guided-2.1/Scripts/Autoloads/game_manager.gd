@@ -44,5 +44,19 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 	else:
 		push_warning("GameManager: no after_image_container set")
 		
-func tanda():
-	print("tanda")
+func change_scene(path: String) -> void:
+	if path == "" or not ResourceLoader.exists(path):
+		push_warning("GameManager: Invalid scene path " + str(path))
+		return
+
+	print("GameManager: changing scene to", path)
+
+	# Optional: freeze player sebelum pindah
+	if player and player.has_method("freeze"):
+		player.freeze()
+
+	# Optional: fade out transition
+	# (kalau kamu punya fade di CanvasLayer)
+	# await do_fade_out()
+
+	get_tree().change_scene_to_file(path)
