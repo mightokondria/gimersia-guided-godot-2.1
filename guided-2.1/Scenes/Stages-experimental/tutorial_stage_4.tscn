@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=4 uid="uid://de5hlhmembkqm"]
 
-[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/tutorial_stage.gd" id="1_6hhla"]
+[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_6hhla"]
 [ext_resource type="Texture2D" uid="uid://dkwmowhsydlnn" path="res://AIMYON.jpg" id="2_trtjt"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="3_o2a5s"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="4_xdmxd"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=4 uid="uid://cs5nualgtfylk"]
 
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="1_hgsim"]
-[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/tutorial_stage.gd" id="1_y1ian"]
+[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_y1ian"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_y1ian"]
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="4_44wb4"]
 [ext_resource type="Texture2D" uid="uid://c0se137ewyk8n" path="res://Resources/Evironments/Aseets/finish.png" id="4_tsfrv"]
