@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cm5sfijpkkahe"]
+
+[node name="Node2D" type="Node2D"]
+scale = Vector2(6, 6)
+
+[node name="SubViewport" type="SubViewport" parent="."]

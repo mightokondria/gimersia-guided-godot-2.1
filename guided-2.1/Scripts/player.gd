@@ -2,20 +2,22 @@ extends CharacterBody2D
 
 signal create_after_image
 
+const scaling = 6
+
 # --- Variabel Gerakan ---
-const SPEED = 120.0
-const JUMP_VELOCITY = -220.0
+const SPEED = 120.0 * scaling
+const JUMP_VELOCITY = -220.0 * scaling
 
 # --- Variabel Double Jump & Wall ---
 const MAX_JUMPS = 2 
-const WALL_SLIDE_SPEED = 20.0
-const WALL_JUMP_PUSHBACK = 220.0 
-const WALL_JUMP_VELOCITY = -280.0 
+const WALL_SLIDE_SPEED = 20.0 * scaling
+const WALL_JUMP_PUSHBACK = 220.0  * scaling
+const WALL_JUMP_VELOCITY = -280.0  * scaling
 
 var jump_count = 0 
 
 # --- Variabel Dash ---
-const DASH_SPEED = 400.0
+const DASH_SPEED = 400.0 * scaling
 const DASH_DURATION = 0.15
 const DASH_COOLDOWN_TIME = 0.5 
 
