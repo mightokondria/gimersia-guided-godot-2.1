@@ -3,7 +3,7 @@ extends CharacterBody2D
 signal create_after_image
 
 # --- Variabel Gerakan ---
-const SPEED = 100.0
+const SPEED = 120.0
 const JUMP_VELOCITY = -220.0
 
 # --- Variabel Double Jump & Wall ---
