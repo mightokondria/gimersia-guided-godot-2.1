@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Guided_2.0"
-run/main_scene="uid://dosp6pne21u5g"
+run/main_scene="uid://dd8764hawiiw0"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
 

@@ -244,7 +244,3 @@ func update_animation():
 		else:
 			if animated_sprite.animation != "idle":
 				animated_sprite.play("idle")
-
-
-func _on_node_2d_child_entered_tree(node: Node) -> void:
-	pass # Replace with function body.
