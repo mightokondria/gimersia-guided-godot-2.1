@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=4 uid="uid://dosp6pne21u5g"]
 
-[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/level_controller.gd" id="1_23iai"]
+[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/tutorial_stage.gd" id="1_23iai"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="1_u22sm"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="2_11oia"]
 [ext_resource type="Texture2D" uid="uid://c0se137ewyk8n" path="res://Resources/Evironments/Aseets/finish.png" id="4_47f6x"]
 [ext_resource type="PackedScene" uid="uid://b23q7ybk2dind" path="res://Scenes/transition.tscn" id="5_3d20r"]
 [ext_resource type="Texture2D" uid="uid://ck3du3jy3tqkv" path="res://Resources/Evironments/Aseets/dojo wall.png" id="6_23iai"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_11oia"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_23iai"]
 texture = ExtResource("2_11oia")
 texture_region_size = Vector2i(8, 8)
 0:0/0 = 0
@@ -241,7 +241,7 @@ texture_region_size = Vector2i(8, 8)
 tile_size = Vector2i(8, 8)
 physics_layer_0/collision_layer = 1
 physics_layer_1/collision_layer = 1
-sources/0 = SubResource("TileSetAtlasSource_11oia")
+sources/0 = SubResource("TileSetAtlasSource_23iai")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3d20r"]
 size = Vector2(10, 15)

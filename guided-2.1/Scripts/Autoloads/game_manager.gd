@@ -43,3 +43,6 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 		tw.tween_callback(Callable(s, "queue_free"))
 	else:
 		push_warning("GameManager: no after_image_container set")
+		
+func tanda():
+	print("tanda")
