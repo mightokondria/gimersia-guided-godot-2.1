@@ -5,20 +5,18 @@ var ReplayManager = null
 
 signal create_after_image
 
-# --- Variabel Gerakan ---
-const SPEED = 120.0
-const JUMP_VELOCITY = -220.0
+const scaling = 6
 
-# --- Variabel Double Jump & Wall ---
+# --- Variabel Gerakan ---
+const SPEED = 120.0 * scaling
+const JUMP_VELOCITY = -220.0 * scaling
 const MAX_JUMPS = 2 
-const WALL_SLIDE_SPEED = 20.0
-const WALL_JUMP_PUSHBACK = 220.0 
-const WALL_JUMP_VELOCITY = -280.0 
+const WALL_SLIDE_SPEED = 20.0 * scaling
+const WALL_JUMP_PUSHBACK = 220.0  * scaling
+const WALL_JUMP_VELOCITY = -280.0  * scaling
 
 var jump_count = 0 
-
-# --- Variabel Dash ---
-const DASH_SPEED = 400.0
+const DASH_SPEED = 400.0 * scaling
 const DASH_DURATION = 0.15
 const DASH_COOLDOWN_TIME = 0.5 
 
@@ -26,15 +24,12 @@ var can_dash = true
 var is_dashing = false
 var has_dash = true
 
-# --- Variabel Status ---
 var controls_enabled = true
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var was_on_floor = false
 var is_wall_sliding = false
 var is_double_jumping = false
 var is_wall_jumping = false
-
-var entered = false
 
 # --- Referensi Node Anak ---
 @onready var animated_sprite = $AnimatedSprite2D
@@ -46,62 +41,57 @@ var entered = false
 @onready var wall_jump_timer = $WallJumpTimer
 @onready var dash_cooldown_timer = $DashCooldownTimer
 
-
 func _ready():
-	# Pastikan GameManager dan ReplayManager tersedia
+	# Register Player ke GameManager (untuk fitur After Image & Respawn)
 	if Engine.has_singleton("GameManager") or has_node("/root/GameManager"):
 		GameManager.register_player(self)
 	
-	# Inisialisasi ReplayManager
-	# Cek menggunakan dua metode, untuk ketahanan
+	# Mencari ReplayManager dengan aman (Singleton atau Node Path)
 	if Engine.has_singleton("ReplayManager"):
 		ReplayManager = Engine.get_singleton("ReplayManager")
 	elif has_node("/root/ReplayManager"):
-		# FALLBACK: Jika singleton registry gagal, coba ambil node langsung dari root tree
 		ReplayManager = get_node("/root/ReplayManager")
-		print("DEBUG: ReplayManager ditemukan melalui jalur /root.")
 	else:
-		# PUSH_ERROR DITINGKATKAN
-		push_error("ReplayManager Autoload TIDAK DITEMUKAN! Periksa: 1. Nama di Project Settings harus 'ReplayManager'. 2. Godot mungkin perlu di-restart.")
+		push_error("sensei.gd: ReplayManager Autoload TIDAK DITEMUKAN! Pastikan sudah diaktifkan di Project Settings.")
 
 	add_to_group("player")
 
-# --- KONTROL TAMBAHAN UNTUK REKAMAN ---
 func _input(event):
-	if event.is_action_pressed("start_record"):
-		if ReplayManager:
-			ReplayManager.start_recording()
-	if event.is_action_pressed("stop_record"):
-		if ReplayManager:
-			ReplayManager.stop_recording()
-			ReplayManager.save_replay_to_disk()
-	if event.is_action_pressed("start_playback"):
-		if ReplayManager:
-			ReplayManager.start_playback()
+	# --- KONTROL SISTEM REPLAY (DINAMIS) ---
 	
-	# --- KONTROL RESET BARU ---
-	# Menghapus file replay yang tersimpan di disk
-	#if event.is_action_pressed("delete_replay"):
-		#if ReplayManager:
-			#ReplayManager.delete_replay_file()
-			#
-	## Membersihkan data rekaman yang sedang aktif di memori
-	#if event.is_action_pressed("clear_record_data"):
-		#if ReplayManager:
-			#ReplayManager.clear_recorded_data()
-			
-	# *CATATAN: Tambahkan action "delete_replay" (misalnya tombol P) dan 
-	# "clear_record_data" (misalnya tombol C) di Project Settings -> Input Map.
+	# 1. MULAI REKAM (Menggunakan Nama Scene saat ini sebagai ID)
+	if event.is_action_pressed("start_record") and ReplayManager:
+		var scene_name = get_tree().current_scene.name
+		print("Player: Meminta rekam untuk scene -> ", scene_name)
+		ReplayManager.start_recording(scene_name)
+		
+	# 2. STOP REKAM & SIMPAN
+	if event.is_action_pressed("stop_record") and ReplayManager:
+		ReplayManager.save_replay_to_disk()
+		
+	# 3. PLAYBACK MANUAL (Untuk testing di scene yang sama)
+	if event.is_action_pressed("start_playback") and ReplayManager:
+		var scene_name = get_tree().current_scene.name
+		ReplayManager.start_playback(scene_name)
+
+	# 4. HAPUS FILE REKAMAN SCENE INI
+	if event.is_action_pressed("delete_replay") and ReplayManager:
+		var scene_name = get_tree().current_scene.name
+		ReplayManager.delete_replay_file(scene_name)
+		
+	# 5. BERSIHKAN MEMORI (Reset rekaman yang belum disimpan)
+	if event.is_action_pressed("clear_record_data") and ReplayManager:
+		ReplayManager.clear_recorded_data()
 
 func _physics_process(delta):
 	var on_floor = is_on_floor()
 	var on_wall = is_on_wall() 
 	
-	# --- Logika Gerakan Normal ---
+	# --- Logika Gerakan Utama ---
 	if not is_dashing:
 		if controls_enabled:
 			
-			# 1. Gravitasi & Wall Slide
+			# Gravitasi & Wall Slide
 			if not on_floor:
 				var direction_input = Input.get_axis("ui_left", "ui_right")
 				var pushing_wall = (direction_input < 0 and get_wall_normal().x > 0) or (direction_input > 0 and get_wall_normal().x < 0)
@@ -110,7 +100,6 @@ func _physics_process(delta):
 					velocity.y = WALL_SLIDE_SPEED
 					is_wall_sliding = true
 					is_double_jumping = false 
-					
 					if not has_dash:
 						has_dash = true
 						dash_orb.reset_dash()
@@ -120,25 +109,23 @@ func _physics_process(delta):
 			else:
 				is_wall_sliding = false
 
-			# 2. Tangani Input Lompat
+			# Input Lompat
 			if Input.is_action_just_pressed("jump"):
-				if on_floor or not coyote_timer.is_stopped():
+				if on_floor or not coyote_timer.is_stopped(): 
 					jump() 
-				elif on_wall and not on_floor:
+				elif on_wall and not on_floor: 
 					wall_jump() 
-				elif jump_count < MAX_JUMPS:
+				elif jump_count < MAX_JUMPS: 
 					double_jump() 
-				else:
+				else: 
 					jump_buffer_timer.start()
 
-			# 3. Tangani gerakan kiri/kanan
+			# Gerakan Kiri/Kanan
 			var direction = Input.get_axis("ui_left", "ui_right")
-			
 			if not is_wall_jumping:
 				if direction:
 					velocity.x = direction * SPEED
-					
-					# Logika Orb Trailing (Di belakang pemain)
+					# Balik arah sprite & Orb
 					if direction < 0: 
 						animated_sprite.flip_h = true
 						dash_orb.orbit_offset.x = abs(dash_orb.orbit_offset.x)
@@ -148,28 +135,34 @@ func _physics_process(delta):
 				else:
 					velocity.x = move_toward(velocity.x, 0, SPEED)
 			else:
+				# Sedikit kontrol udara saat wall jump
 				velocity.x = move_toward(velocity.x, 0, 5.0)
 
-	# --- Logika Dash ---
+	# Input Dash
 	if Input.is_action_just_pressed("dash") and can_dash and not is_dashing and has_dash and dash_cooldown_timer.is_stopped():
 		start_dash()
 	
 	move_and_slide()
 
-	# --- MEREKAM DATA PERGERAKAN ---
+	# --- MEREKAM FRAME ---
+	# Mengirim data posisi, arah, animasi, dan frame index ke ReplayManager
 	if ReplayManager and ReplayManager.is_recording:
-		ReplayManager.record_frame(global_position, animated_sprite.flip_h)
+		ReplayManager.record_frame(
+			global_position, 
+			animated_sprite.flip_h, 
+			animated_sprite.animation, 
+			animated_sprite.frame
+		)
 
-	# --- Logika Pasca-Gerakan ---
+	# --- Logika Reset Status ---
 	if is_on_floor():
 		is_double_jumping = false 
 		is_wall_jumping = false
-		
 		if not was_on_floor: 
 			has_dash = true
 			dash_orb.reset_dash()
 			jump_count = 0 
-			if not jump_buffer_timer.is_stopped():
+			if not jump_buffer_timer.is_stopped(): 
 				jump()
 	
 	if was_on_floor and not is_on_floor() and not is_dashing:
@@ -179,25 +172,24 @@ func _physics_process(delta):
 	was_on_floor = is_on_floor()
 	update_animation()
 
+# --- FUNGSI HELPER / ACTION ---
 
-# --- Fungsi Helper (tetap sama) ---
-
-func freeze():
+func freeze(): 
 	controls_enabled = false
 	velocity = Vector2.ZERO
 
-func unfreeze():
+func unfreeze(): 
 	controls_enabled = true
 
-func jump():
+func jump(): 
 	velocity.y = JUMP_VELOCITY
-	jump_count = 1 
-	is_double_jumping = false 
+	jump_count = 1
+	is_double_jumping = false
 	is_wall_jumping = false
 	coyote_timer.stop()
 	jump_buffer_timer.stop()
 
-func double_jump():
+func double_jump(): 
 	velocity.y = JUMP_VELOCITY
 	jump_count += 1
 	is_double_jumping = true
@@ -208,13 +200,12 @@ func wall_jump():
 	velocity.y = WALL_JUMP_VELOCITY
 	var wall_normal = get_wall_normal()
 	velocity.x = wall_normal.x * WALL_JUMP_PUSHBACK
-	
 	is_wall_jumping = true
 	wall_jump_timer.start()
-	
 	jump_count = 1
 	is_double_jumping = false 
 	
+	# Update arah hadap saat wall jump
 	if velocity.x < 0: 
 		animated_sprite.flip_h = true
 		dash_orb.orbit_offset.x = abs(dash_orb.orbit_offset.x)
@@ -222,15 +213,15 @@ func wall_jump():
 		animated_sprite.flip_h = false
 		dash_orb.orbit_offset.x = -abs(dash_orb.orbit_offset.x)
 
-func _on_wall_jump_timer_timeout():
+func _on_wall_jump_timer_timeout(): 
 	is_wall_jumping = false
 
 func start_dash():
 	is_dashing = true
 	has_dash = false
 	is_wall_sliding = false
-	is_double_jumping = false 
-	is_wall_jumping = false 
+	is_double_jumping = false
+	is_wall_jumping = false
 	velocity.y = 0
 	
 	var dash_direction = 1 if not animated_sprite.flip_h else -1
@@ -238,7 +229,6 @@ func start_dash():
 	
 	dash_timer.start(DASH_DURATION)
 	dash_cooldown_timer.start(DASH_COOLDOWN_TIME)
-	
 	dash_orb.use_dash()
 	after_image_timer.start()
 
@@ -247,46 +237,43 @@ func _on_dash_timer_timeout():
 	velocity.x = move_toward(velocity.x, 0, DASH_SPEED)
 	after_image_timer.stop()
 	
-	if is_on_floor():
+	if is_on_floor(): 
 		has_dash = true
 		dash_orb.reset_dash()
 		jump_count = 0
 
-func _on_after_image_timer_timeout():
-	print("Player: emitting create_after_image at ", global_position, " flip:", animated_sprite.flip_h)
-	emit_signal("create_after_image", animated_sprite.sprite_frames.get_frame_texture(animated_sprite.animation, animated_sprite.frame), global_position, animated_sprite.flip_h)
+func _on_after_image_timer_timeout(): 
+	# Mengirim sinyal ke GameManager untuk membuat efek bayangan
+	emit_signal("create_after_image", 
+		animated_sprite.sprite_frames.get_frame_texture(animated_sprite.animation, animated_sprite.frame), 
+		global_position, 
+		animated_sprite.flip_h
+	)
 
-func _on_animated_sprite_2d_animation_finished():
-	if animated_sprite.animation == "double_jump":
+func _on_animated_sprite_2d_animation_finished(): 
+	if animated_sprite.animation == "double_jump": 
 		is_double_jumping = false
 
 func update_animation():
-	if is_dashing:
-		if animated_sprite.animation != "dash":
-			animated_sprite.play("dash")
+	if is_dashing: 
+		if animated_sprite.animation != "dash": animated_sprite.play("dash")
 		return
 
-	if is_double_jumping:
-		if animated_sprite.animation != "double_jump":
-			animated_sprite.play("double_jump")
+	if is_double_jumping: 
+		if animated_sprite.animation != "double_jump": animated_sprite.play("double_jump")
 		return
 
-	if is_wall_sliding:
-		if animated_sprite.animation != "crawl":
-			animated_sprite.play("crawl")
+	if is_wall_sliding: 
+		if animated_sprite.animation != "crawl": animated_sprite.play("crawl")
 		return
 
 	if not is_on_floor():
-		if velocity.y < 0:
-			if animated_sprite.animation != "jump":
-				animated_sprite.play("jump")
-		else:
-			if animated_sprite.animation != "fall":
-				animated_sprite.play("fall")
+		if velocity.y < 0: 
+			if animated_sprite.animation != "jump": animated_sprite.play("jump")
+		else: 
+			if animated_sprite.animation != "fall": animated_sprite.play("fall")
 	else:
-		if velocity.x != 0:
-			if animated_sprite.animation != "walk":
-				animated_sprite.play("walk")
-		else:
-			if animated_sprite.animation != "idle":
-				animated_sprite.play("idle")
+		if velocity.x != 0: 
+			if animated_sprite.animation != "walk": animated_sprite.play("walk")
+		else: 
+			if animated_sprite.animation != "idle": animated_sprite.play("idle")

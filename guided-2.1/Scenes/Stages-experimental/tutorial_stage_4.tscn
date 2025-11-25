@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=4 uid="uid://de5hlhmembkqm"]
+[gd_scene load_steps=11 format=4 uid="uid://de5hlhmembkqm"]
 
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_6hhla"]
 [ext_resource type="Texture2D" uid="uid://dkwmowhsydlnn" path="res://AIMYON.jpg" id="2_trtjt"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="3_o2a5s"]
-[ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="4_xdmxd"]
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="5_kdx5p"]
+[ext_resource type="PackedScene" uid="uid://oxhypuld4ccf" path="res://Scenes/sensei.tscn" id="6_6hhla"]
 [ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="6_olw4l"]
+[ext_resource type="PackedScene" uid="uid://cfwpqhubfphin" path="res://Scenes/ghost_player.tscn" id="7_trtjt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_tsfrv"]
 texture = ExtResource("3_o2a5s")
@@ -246,9 +247,11 @@ sources/0 = SubResource("TileSetAtlasSource_tsfrv")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3a6iy"]
 size = Vector2(12, 12)
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("StartPosition")]
+[node name="TutorrialStage4" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
 script = ExtResource("1_6hhla")
 StartPosition = NodePath("StartPosition")
+player = NodePath("player")
+custom_replay_id = "TutorrialStage4"
 
 [node name="Aimyon" type="Sprite2D" parent="."]
 position = Vector2(593, 605)
@@ -279,6 +282,12 @@ texture = ExtResource("6_olw4l")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D_2"]
 shape = SubResource("RectangleShape2D_3a6iy")
 
-[node name="player" parent="." instance=ExtResource("4_xdmxd")]
-position = Vector2(193, 374)
+[node name="player" parent="." instance=ExtResource("6_6hhla")]
+position = Vector2(193, 375)
 scale = Vector2(6, 6)
+
+[node name="GhostPlayer" parent="." instance=ExtResource("7_trtjt")]
+position = Vector2(425, 836)
+scale = Vector2(6, 6)
+
+[connection signal="child_entered_tree" from="." to="player" method="_on_node_2d_child_entered_tree"]
