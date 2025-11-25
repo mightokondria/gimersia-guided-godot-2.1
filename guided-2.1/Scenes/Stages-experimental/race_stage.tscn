@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=4 uid="uid://fqosdmpy8p03"]
+[gd_scene load_steps=10 format=4 uid="uid://fqosdmpy8p03"]
 
 [ext_resource type="Script" uid="uid://dgtlxbyqqb0dj" path="res://Scripts/race_controller.gd" id="1_b8niy"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="1_po84g"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_6p5a6"]
 [ext_resource type="PackedScene" uid="uid://cfwpqhubfphin" path="res://Scenes/ghost_player.tscn" id="4_bq65n"]
 [ext_resource type="Script" uid="uid://bqvs51cpwes0f" path="res://Scripts/finish_line.gd" id="5_b8niy"]
+[ext_resource type="PackedScene" uid="uid://oxhypuld4ccf" path="res://Scenes/sensei.tscn" id="5_lk5vc"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bq65n"]
 texture = ExtResource("1_po84g")
@@ -262,8 +263,7 @@ tile_set = SubResource("TileSet_b8niy")
 position = Vector2(254, 856)
 
 [node name="GhostPlayer" parent="." instance=ExtResource("4_bq65n")]
-visible = false
-position = Vector2(436, 834)
+position = Vector2(252, 856)
 scale = Vector2(6, 6)
 collision_layer = 4
 collision_mask = 0
@@ -277,10 +277,6 @@ script = ExtResource("5_b8niy")
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
-[node name="player" parent="." instance=ExtResource("2_6p5a6")]
-position = Vector2(254, 856.00006)
-scale = Vector2(6, 6)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="CountdownLabel" type="Label" parent="CanvasLayer"]
@@ -290,3 +286,11 @@ offset_right = 509.0
 offset_bottom = 602.0
 theme_override_font_sizes/font_size = 100
 text = "3"
+
+[node name="player" parent="." instance=ExtResource("2_6p5a6")]
+position = Vector2(202, 573)
+scale = Vector2(6, 6)
+
+[node name="player2" parent="." instance=ExtResource("5_lk5vc")]
+position = Vector2(199, 555)
+scale = Vector2(6, 6)

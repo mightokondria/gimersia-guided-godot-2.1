@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bjr2yks0uop84"]
+
+[node name="PlayerMenang" type="Node2D"]
+
+[node name="Label" type="Label" parent="."]
+offset_left = 488.0
+offset_top = 436.0
+offset_right = 1346.0
+offset_bottom = 573.0
+theme_override_font_sizes/font_size = 100
+text = "PLAYER KALAH!"

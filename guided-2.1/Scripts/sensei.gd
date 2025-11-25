@@ -8,7 +8,7 @@ signal create_after_image
 const scaling = 6
 
 # --- Variabel Gerakan ---
-const SPEED = 120.0 * scaling
+const SPEED = 140.0 * scaling
 const JUMP_VELOCITY = -220.0 * scaling
 const MAX_JUMPS = 2 
 const WALL_SLIDE_SPEED = 20.0 * scaling
