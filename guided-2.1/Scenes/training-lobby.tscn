@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=4 uid="uid://domgwmoiejreq"]
+[gd_scene load_steps=8 format=4 uid="uid://domgwmoiejreq"]
 
 [ext_resource type="TileSet" uid="uid://c8fxdp1f6gf34" path="res://Resources/Evironments/dojo_wall_demo.tres" id="1_8lp0x"]
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_lon5p"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_0p5k5"]
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="3_sm7ft"]
 [ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="4_lon5p"]
+[ext_resource type="PackedScene" uid="uid://dtu2q1v2470ks" path="res://Scenes/Objects/spike.tscn" id="6_1uee4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1uee4"]
 size = Vector2(12, 12)
@@ -70,19 +71,60 @@ position = Vector2(-286, 1323)
 scale = Vector2(6, 6)
 
 [node name="StartPosition" type="Marker2D" parent="."]
-position = Vector2(-301, 1330)
+position = Vector2(-1050, 1149)
 
-[node name="Area2D_2" type="Area2D" parent="."]
-position = Vector2(1522, 1541)
+[node name="TrainingDashRoom" type="Area2D" parent="."]
+position = Vector2(336, 1544)
 scale = Vector2(6, 6)
 script = ExtResource("3_sm7ft")
 target_scene_path = "uid://dd8764hawiiw0"
 
-[node name="Sprite2D" type="Sprite2D" parent="Area2D_2"]
+[node name="Sprite2D" type="Sprite2D" parent="TrainingDashRoom"]
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("4_lon5p")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D_2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TrainingDashRoom"]
 shape = SubResource("RectangleShape2D_1uee4")
+
+[node name="Spike" type="Node2D" parent="."]
+
+[node name="Spike" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(835, 1879)
+
+[node name="Spike2" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(879, 1879)
+
+[node name="Spike3" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(922, 1879)
+
+[node name="Spike4" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(966, 1879)
+
+[node name="Spike5" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1009, 1879)
+
+[node name="Spike6" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1053, 1879)
+
+[node name="Spike7" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1096, 1879)
+
+[node name="Spike8" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1140, 1879)
+
+[node name="Spike9" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1185, 1879)
+
+[node name="Spike10" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1229, 1879)
+
+[node name="Spike11" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1272, 1879)
+
+[node name="Spike12" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1316, 1879)
+
+[node name="Spike13" parent="Spike" instance=ExtResource("6_1uee4")]
+position = Vector2(1362, 1879)
 
 [connection signal="child_entered_tree" from="." to="player" method="_on_node_2d_child_entered_tree"]

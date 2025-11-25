@@ -29,7 +29,3 @@ func _ready():
 	else:
 		if not player: print("⚠️ Level: Player belum di-assign di Inspector.")
 		if not StartPosition: print("⚠️ Level: StartPosition belum di-assign di Inspector.")
-
-
-func _on_child_entered_tree(node: Node) -> void:
-	pass # Replace with function body.
