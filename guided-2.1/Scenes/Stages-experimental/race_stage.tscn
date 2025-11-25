@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=4 uid="uid://fqosdmpy8p03"]
+[gd_scene load_steps=11 format=4 uid="uid://fqosdmpy8p03"]
 
 [ext_resource type="Script" uid="uid://dgtlxbyqqb0dj" path="res://Scripts/race_controller.gd" id="1_b8niy"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="1_po84g"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_6p5a6"]
 [ext_resource type="PackedScene" uid="uid://cfwpqhubfphin" path="res://Scenes/ghost_player.tscn" id="4_bq65n"]
 [ext_resource type="Script" uid="uid://bqvs51cpwes0f" path="res://Scripts/finish_line.gd" id="5_b8niy"]
-[ext_resource type="PackedScene" uid="uid://oxhypuld4ccf" path="res://Scenes/sensei.tscn" id="5_lk5vc"]
+[ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="5_lk5vc"]
+[ext_resource type="Script" uid="uid://dwbxqb1mry1oj" path="res://Scripts/race_checkpoint.gd" id="6_8l4yt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bq65n"]
 texture = ExtResource("1_po84g")
@@ -268,29 +269,82 @@ scale = Vector2(6, 6)
 collision_layer = 4
 collision_mask = 0
 
-[node name="FinishLine" type="Area2D" parent="."]
+[node name="FinishLine" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
 position = Vector2(2822, 935)
 collision_mask = 6
 script = ExtResource("5_b8niy")
+lose_popup = NodePath("../LosePopUp/Label")
+
+[node name="Sprite2D" type="Sprite2D" parent="FinishLine"]
+scale = Vector2(0.8552391, 0.8552391)
+texture = ExtResource("5_lk5vc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FinishLine"]
+scale = Vector2(5.551097, 5.551097)
+shape = SubResource("RectangleShape2D_bq65n")
+
+[node name="Checkpoint1" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+position = Vector2(1596, 935)
+collision_mask = 6
+script = ExtResource("6_8l4yt")
+lose_popup = NodePath("../LosePopUp/Label")
+
+[node name="Sprite2D" type="Sprite2D" parent="Checkpoint1"]
+scale = Vector2(0.8552391, 0.8552391)
+texture = ExtResource("5_lk5vc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint1"]
+scale = Vector2(5.551097, 5.551097)
+shape = SubResource("RectangleShape2D_bq65n")
+
+[node name="Checkpoint2" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+position = Vector2(2191, 935)
+collision_mask = 6
+script = ExtResource("6_8l4yt")
+lose_popup = NodePath("../LosePopUp/Label")
+
+[node name="Sprite2D" type="Sprite2D" parent="Checkpoint2"]
+scale = Vector2(0.8552391, 0.8552391)
+texture = ExtResource("5_lk5vc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint2"]
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="CountdownLabel" type="Label" parent="CanvasLayer"]
-offset_left = 452.0
-offset_top = 465.0
-offset_right = 509.0
-offset_bottom = 602.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -28.5
+offset_top = -68.5
+offset_right = 28.5
+offset_bottom = 68.5
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_font_sizes/font_size = 100
 text = "3"
 
 [node name="player" parent="." instance=ExtResource("2_6p5a6")]
-position = Vector2(202, 573)
+position = Vector2(146, 853.00006)
 scale = Vector2(6, 6)
 
-[node name="player2" parent="." instance=ExtResource("5_lk5vc")]
-position = Vector2(199, 555)
-scale = Vector2(6, 6)
+[node name="LosePopUp" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="LosePopUp"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -178.0
+offset_top = -41.5
+offset_right = 178.0
+offset_bottom = 41.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "kamu kalah!"

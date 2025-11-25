@@ -8,14 +8,12 @@ var accumulator = 0.0
 var is_playing = false
 var current_frame_index = 0
 
-# --- TAMBAHAN BARU: Status Balapan ---
+# Status Balapan
 var is_race_started = false 
-# -------------------------------------
 
 @onready var animated_sprite = $AnimatedSprite2D 
 
 func _ready():
-	# ... (Bagian pencarian ReplayManager TETAP SAMA) ...
 	if has_node("/root/ReplayManager"):
 		_active_manager = get_node("/root/ReplayManager")
 	elif Engine.has_singleton("ReplayManager"):
@@ -28,40 +26,39 @@ func _ready():
 	visible = true 
 	modulate = Color(1, 1, 1, 0.6) 
 
-	# Matikan Collision agar tidak nyangkut (opsional, tergantung setting mask kamu)
 	if has_node("CollisionShape2D"):
 		$CollisionShape2D.disabled = false 
-		collision_layer = 4 # Layer Ghost
-		collision_mask = 0  # Tidak nabrak apapun
+		collision_layer = 4 
+		collision_mask = 0 
 
 func _on_replay_data_loaded(data):
 	playback_data = data
 	is_playing = true
 	visible = true
 	current_frame_index = 0
-	
-	# Reset status balapan ke FALSE (Menunggu Countdown)
 	is_race_started = false 
 	
 	print("[GHOST] Data dimuat. Menunggu sinyal start_race()...")
 	
 	if data.size() > 0:
-		# Set posisi awal, TAPI jangan bergerak dulu
 		global_position = Vector2(data[0].p[0], data[0].p[1])
 		animated_sprite.flip_h = data[0].f
 
-# --- FUNGSI BARU UNTUK MEMULAI BALAPAN ---
 func start_race():
 	is_race_started = true
 	print("[GHOST] GASSS! Balapan dimulai.")
-# -----------------------------------------
+
+# --- FUNGSI BARU: FREEZE ---
+func freeze():
+	is_race_started = false # Matikan update gerakan
+	is_playing = false      # Matikan playback
+	print("[GHOST] Dibekukan (Freeze).")
+# ---------------------------
 
 func _process(delta):
-	# Tambahkan pengecekan 'is_race_started'
 	if not is_playing or playback_data.is_empty() or not _active_manager or not is_race_started:
 		return
 
-	# ... (Sisa logika loop playback TETAP SAMA) ...
 	accumulator += delta
 	while accumulator >= time_per_frame:
 		if current_frame_index < playback_data.size():
