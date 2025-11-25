@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameManager="*res://Scripts/Autoloads/game_manager.gd"
 ReplayManager="*res://Scripts/replay_manager.gd"
+TransitionScreen="*res://Scenes/Objects/transition_screen.tscn"
 
 [display]
 

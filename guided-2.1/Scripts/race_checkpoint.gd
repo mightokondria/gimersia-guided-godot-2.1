@@ -53,7 +53,7 @@ func _trigger_defeat():
 	if player and player.has_method("freeze"):
 		player.freeze()
 		
-	# 2. Hentikan Ghost (FREEZE) - [UPDATE BARU]
+	# 2. Hentikan Ghost (FREEZE)
 	# Kita cari node bernama "GhostPlayer" di scene aktif secara rekursif
 	var ghost = get_tree().current_scene.find_child("GhostPlayer", true, false)
 	if ghost and ghost.has_method("freeze"):
@@ -68,11 +68,14 @@ func _trigger_defeat():
 	if lose_popup:
 		lose_popup.visible = true
 	
-	# 4. Tunggu sebentar (2 detik)
+	# 4. Tunggu sebentar (2 detik) agar pemain menyadari kekalahan
 	await get_tree().create_timer(2.0).timeout
 	
-	# 5. Pindah ke Scene Kalah
-	if GameManager:
-		GameManager.request_change_scene("res://Scenes/Dialog/player_kalah.tscn")
+	# 5. Pindah ke Scene Kalah MENGGUNAKAN TRANSISI
+	# Pastikan TransitionScreen sudah dijadikan Autoload di Project Settings
+	if TransitionScreen:
+		TransitionScreen.transition_to_scene("res://Scenes/Dialog/player_kalah.tscn")
 	else:
+		# Fallback manual jika lupa pasang Autoload
+		push_warning("RaceCheckpoint: TransitionScreen Autoload tidak ditemukan, pindah scene kasar.")
 		get_tree().change_scene_to_file("res://Scenes/Dialog/player_kalah.tscn")
