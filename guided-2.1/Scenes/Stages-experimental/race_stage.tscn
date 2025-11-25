@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=4 uid="uid://fqosdmpy8p03"]
 
-[ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_6p5a6"]
+[ext_resource type="Script" uid="uid://dgtlxbyqqb0dj" path="res://Scripts/race_controller.gd" id="1_b8niy"]
 [ext_resource type="Texture2D" uid="uid://bkgx2wor577hy" path="res://Resources/Evironments/Tileset/tileset_dojo.png" id="1_po84g"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_6p5a6"]
 [ext_resource type="PackedScene" uid="uid://cfwpqhubfphin" path="res://Scenes/ghost_player.tscn" id="4_bq65n"]
@@ -244,10 +244,12 @@ sources/0 = SubResource("TileSetAtlasSource_bq65n")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bq65n"]
 
-[node name="RaceStage" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
-script = ExtResource("1_6p5a6")
+[node name="RaceStage" type="Node2D" node_paths=PackedStringArray("StartPosition", "player", "FinishArea", "CountdownLabel")]
+script = ExtResource("1_b8niy")
 StartPosition = NodePath("StartPosition")
-player = NodePath("")
+player = NodePath("player")
+FinishArea = NodePath("FinishLine")
+CountdownLabel = NodePath("CanvasLayer/CountdownLabel")
 custom_replay_id = "RaceStage"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
@@ -277,3 +279,13 @@ shape = SubResource("RectangleShape2D_bq65n")
 [node name="player" parent="." instance=ExtResource("2_6p5a6")]
 position = Vector2(229, 700)
 scale = Vector2(6, 6)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="CountdownLabel" type="Label" parent="CanvasLayer"]
+offset_left = 452.0
+offset_top = 465.0
+offset_right = 509.0
+offset_bottom = 602.0
+theme_override_font_sizes/font_size = 100
+text = "3"
