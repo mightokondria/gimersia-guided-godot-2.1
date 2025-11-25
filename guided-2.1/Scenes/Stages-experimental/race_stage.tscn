@@ -259,9 +259,10 @@ tile_map_data = PackedByteArray("AAAAABYAAAAFAAIAAAABABYAAAABAAAAAAACABYAAAABAAA
 tile_set = SubResource("TileSet_b8niy")
 
 [node name="StartPosition" type="Marker2D" parent="."]
-position = Vector2(193, 374)
+position = Vector2(254, 856)
 
 [node name="GhostPlayer" parent="." instance=ExtResource("4_bq65n")]
+visible = false
 position = Vector2(436, 834)
 scale = Vector2(6, 6)
 collision_layer = 4
@@ -277,7 +278,7 @@ scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
 [node name="player" parent="." instance=ExtResource("2_6p5a6")]
-position = Vector2(229, 700)
+position = Vector2(254, 856.00006)
 scale = Vector2(6, 6)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

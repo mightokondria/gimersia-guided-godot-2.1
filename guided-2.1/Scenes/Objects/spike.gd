@@ -1,23 +1,32 @@
 extends Area2D
 
 func _ready():
+	# --- PERBAIKAN OTOMATIS MASK ---
+	# Karena Player dipindah ke Layer 2, kita pastikan Duri bisa melihat Layer 2.
+	# Set bit ke-2 (nilai 2) pada mask agar aktif mendeteksi Player.
+	set_collision_mask_value(2, true) 
+	
 	# Hubungkan sinyal secara otomatis
 	if not body_entered.is_connected(_on_body_entered):
 		body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node):
+	# DEBUG: Cek apakah sinyal masuk sama sekali
+	# print("Spike disentuh oleh: ", body.name) 
+
 	# 1. Cek apakah yang menginjak adalah Player
 	if body.is_in_group("player"):
 		# Cek apakah player sedang dalam proses respawn (controls_enabled == false)
 		# Ini mencegah fungsi dipanggil berkali-kali dalam 1 detik
 		if "controls_enabled" in body and body.controls_enabled == false:
+			# print("Spike: Player kena tapi sedang kebal (Frozen/Respawning)")
 			return
 			
 		print("Auch! Kena duri.")
 		_start_death_sequence(body)
 
 func _start_death_sequence(player_node):
-	# Cek dulu apakah tujuan respawn ada
+	# Cek dulu apakah tujuan respawn ada (diset oleh Level Controller via GameManager)
 	if not (GameManager and GameManager.start_position):
 		push_warning("Spike: Gagal respawn. StartPosition belum terdaftar!")
 		return
@@ -30,7 +39,6 @@ func _start_death_sequence(player_node):
 	var tw = create_tween()
 	
 	# Kita ambil sprite anak dari player untuk digoyangkan
-	# (Menggoyang sprite lebih aman daripada menggoyang body physics)
 	var sprite = player_node.get_node_or_null("AnimatedSprite2D")
 	var original_sprite_pos = Vector2.ZERO
 	if sprite:
@@ -40,7 +48,6 @@ func _start_death_sequence(player_node):
 	tw.tween_property(player_node, "modulate", Color(1, 0.2, 0.2), 0.05)
 	
 	# 2. Efek Getar (Shake) selama kurang lebih 0.3 detik
-	# Kita buat loop 6 kali gerakan cepat (6 x 0.05s = 0.3s)
 	var shake_power = 5.0
 	for i in range(6):
 		var random_offset = Vector2(randf_range(-shake_power, shake_power), randf_range(-shake_power, shake_power))
