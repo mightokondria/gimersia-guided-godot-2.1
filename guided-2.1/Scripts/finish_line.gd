@@ -1,66 +1,46 @@
 extends Area2D
 
-# Tarik node UI Popup "Anda Kalah" ke sini lewat Inspector
-@export var lose_popup: Control 
+@export var lose_popup: Control
+signal body_finished(body_node, stage_id)
 
-# --- TAMBAHAN DEBUGGING ---
-# Centang ini di Inspector untuk mengaktifkan checkpoint.
-# Hilangkan centang jika ingin menonaktifkannya (bypass) saat debugging.
-@export var is_active: bool = true 
-# --------------------------
+@export var is_active: bool = true
+@export var current_stage_id: int = 1
 
-var is_cleared = false # Penanda apakah player sudah lewat sini
+var is_cleared = false
 var game_over_triggered = false
 
 func _ready():
-	# Pastikan mendeteksi Player (Layer 2) dan Ghost (Layer 3)
-	# Atur Mask di Inspector: Centang Layer 2 dan 3!
-	if not body_entered.is_connected(_on_body_entered):
-		body_entered.connect(_on_body_entered)
+	# hubungkan body_entered (jika belum terhubung)
+	if not is_connected("body_entered", Callable(self, "_on_body_entered")):
+		connect("body_entered", Callable(self, "_on_body_entered"))
+	if lose_popup:
+		lose_popup.visible = false
 
-func _on_body_entered(body):
-	# Jika checkpoint dinonaktifkan lewat Inspector, abaikan semuanya
+func _on_body_entered(body: Node) -> void:
 	if not is_active:
 		return
 
-	if game_over_triggered:
-		return # Jangan lakukan apa-apa kalau game sudah berakhir
+	if not body:
+		return
 
-	# 1. JIKA PLAYER MASUK (AMAN)
-	if body.is_in_group("player"):
-		if not is_cleared:
-			is_cleared = true
-			print("Checkpoint: Player lolos! Aman.")
-			# Visual feedback: Ubah warna jadi hijau (opsional)
-			modulate = Color.GREEN
+	# hanya player atau sensei
+	if body.is_in_group("player") or body.name == "Sensei":
+		# emit local signal (opsional)
+		emit_signal("body_finished", body, current_stage_id)
 
-	# 2. JIKA GHOST MASUK (BAHAYA)
-	elif body.has_method("get_collision_layer_value") and body.get_collision_layer_value(3):
-		# Cek apakah player sudah lewat duluan?
-		if is_cleared:
-			print("Checkpoint: Ghost lewat (tapi player sudah aman).")
+		# disable area safely
+		set_deferred("monitoring", false)
+		set_deferred("process_mode", false)
+
+		# panggil GameManager secara deferred agar aman (hindari physics-callback issues)
+		if has_node("/root/GameManager"):
+			var gm = get_node("/root/GameManager")
+			# gunakan call_deferred supaya eksekusi pindah scene di frame berikutnya (aman)
+			gm.call_deferred("request_change_scene_with_transition", true, current_stage_id)
 		else:
-			# Player belum lewat, tapi Ghost sudah sampai -> KALAH!
-			print("Checkpoint: Ghost menang di checkpoint ini! PLAYER KALAH.")
-			_trigger_defeat()
+			# fallback: lakukan deferred change langsung
+			call_deferred("_fallback_change")
 
-func _trigger_defeat():
-	game_over_triggered = true
-	
-	# 1. Munculkan Popup
-	if lose_popup:
-		lose_popup.visible = true
-	
-	# 2. Hentikan Player (biar dramatis)
-	var player = get_tree().get_first_node_in_group("player")
-	if player and player.has_method("freeze"):
-		player.freeze()
-		
-	# 3. Tunggu sebentar (misal 2 detik) biar popup terbaca
-	await get_tree().create_timer(2.0).timeout
-	
-	# 4. Lempar ke Scene Kalah
-	if GameManager:
-		GameManager.request_change_scene("res://Scenes/Dialog/player_kalah.tscn")
-	else:
-		get_tree().change_scene_to_file("res://Scenes/Dialog/player_kalah.tscn")
+func _fallback_change() -> void:
+	# fallback behavior: misalnya pindah ke scene kalah/menang default
+	print("finish_line: fallback change (no GameManager found)")

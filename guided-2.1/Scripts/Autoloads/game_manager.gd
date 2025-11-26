@@ -9,6 +9,8 @@ var is_transitioning: bool = false
 
 var next_spawn_id: String = ""   # tambahkan di top-level jika belum ada
 
+@onready var TransitionScreen: Node = get_node("/root/TransitionScreen") # Sesuaikan path
+
 func _ready() -> void:
 	print("GameManager (autoload) ready. Waiting for level/player registration...")
 
@@ -68,6 +70,30 @@ func _do_change_scene(path: String) -> void:
 	print("GameManager: changing scene to", path)
 	get_tree().change_scene_to_file(path)
 	
+
+# FUNGSI BARU: FUNGSI PEMANGGIL TRANISI SAAT MENANG/KALAH
+func request_change_scene_with_transition(did_player_win: bool, current_stage_id: int = 1) -> void:
+	var target_scene: String
+	
+	if did_player_win:
+		target_scene = "res://Scenes/Dialog/player_menang.tscn"
+	else:
+		target_scene = "res://Scenes/Dialog/player_kalah.tscn"
+		
+	# Jika TransitionScreen ada dan punya method transition_to_scene, panggil itu.
+	if has_node("/root/TransitionScreen"):
+		var ts = get_node("/root/TransitionScreen")
+		if ts and ts.has_method("transition_to_scene"):
+			# Panggilan biasa OK (TransitionScreen biasanya yang handle deferred/change)
+			ts.transition_to_scene(target_scene)
+			return
+
+	# Fallback: gunakan call_deferred supaya tidak memicu physics-callback removal
+	push_warning("GameManager: TransitionScreen tidak ditemukan. Menjalankan fallback deferred change.")
+	call_deferred("_do_change_scene", target_scene)
+
+
 	
 func tanda():
 	print("tanda")
+	
