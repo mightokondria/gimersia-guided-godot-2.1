@@ -50,6 +50,7 @@ collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
 win_popup = NodePath("../WinPopUp/Label")
+lose_scene_path = "res://Scenes/training-lobby.tscn"
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint1"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -65,6 +66,7 @@ collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
 win_popup = NodePath("../WinPopUp/Label")
+lose_scene_path = "res://Scenes/training-lobby.tscn"
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint2"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -80,6 +82,7 @@ collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
 win_popup = NodePath("../WinPopUp/Label")
+lose_scene_path = "res://Scenes/training-lobby.tscn"
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint3"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -95,6 +98,7 @@ collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
 win_popup = NodePath("../WinPopUp/Label")
+lose_scene_path = "res://Scenes/training-lobby.tscn"
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint4"]
 scale = Vector2(0.8552391, 0.8552391)

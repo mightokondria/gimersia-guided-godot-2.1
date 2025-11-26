@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=4 uid="uid://dd8764hawiiw0"]
+[gd_scene load_steps=8 format=4 uid="uid://dd8764hawiiw0"]
 
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_cbana"]
+[ext_resource type="PackedScene" uid="uid://dtu2q1v2470ks" path="res://Scenes/Objects/spike.tscn" id="2_4blo7"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_jdiqx"]
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="3_4blo7"]
 [ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="4_2o8u0"]
@@ -13,6 +14,90 @@ size = Vector2(12, 12)
 script = ExtResource("1_cbana")
 StartPosition = NodePath("StartPosition")
 player = NodePath("player")
+
+[node name="Spike" type="Node2D" parent="."]
+position = Vector2(554, -1284)
+
+[node name="Spike" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(835, 1879)
+
+[node name="Spike2" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(879, 1879)
+
+[node name="Spike3" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(922, 1879)
+
+[node name="Spike4" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(966, 1879)
+
+[node name="Spike5" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1009, 1879)
+
+[node name="Spike6" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1053, 1879)
+
+[node name="Spike7" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1096, 1879)
+
+[node name="Spike8" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1140, 1879)
+
+[node name="Spike9" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1185, 1879)
+
+[node name="Spike10" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1229, 1879)
+
+[node name="Spike11" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1272, 1879)
+
+[node name="Spike12" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1316, 1879)
+
+[node name="Spike13" parent="Spike" instance=ExtResource("2_4blo7")]
+position = Vector2(1362, 1879)
+
+[node name="Spike2" type="Node2D" parent="."]
+position = Vector2(2179, -1284)
+
+[node name="Spike" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(835, 1879)
+
+[node name="Spike2" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(879, 1879)
+
+[node name="Spike3" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(922, 1879)
+
+[node name="Spike4" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(966, 1879)
+
+[node name="Spike5" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1009, 1879)
+
+[node name="Spike6" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1053, 1879)
+
+[node name="Spike7" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1096, 1879)
+
+[node name="Spike8" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1140, 1879)
+
+[node name="Spike9" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1185, 1879)
+
+[node name="Spike10" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1229, 1879)
+
+[node name="Spike11" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1272, 1879)
+
+[node name="Spike12" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1316, 1879)
+
+[node name="Spike13" parent="Spike2" instance=ExtResource("2_4blo7")]
+position = Vector2(1362, 1879)
 
 [node name="AfterImageContainer" type="Node2D" parent="."]
 
