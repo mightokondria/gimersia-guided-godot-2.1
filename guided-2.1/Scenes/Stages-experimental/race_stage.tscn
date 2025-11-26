@@ -29,6 +29,7 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="FinishLine" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+visible = false
 position = Vector2(3206, 460)
 collision_mask = 6
 script = ExtResource("5_b8niy")
@@ -85,6 +86,21 @@ scale = Vector2(0.8552391, 0.8552391)
 texture = ExtResource("5_lk5vc")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint3"]
+scale = Vector2(5.551097, 5.551097)
+shape = SubResource("RectangleShape2D_bq65n")
+
+[node name="Checkpoint4" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup", "win_popup")]
+position = Vector2(3205, 935)
+collision_mask = 6
+script = ExtResource("6_8l4yt")
+lose_popup = NodePath("../LosePopUp/Label")
+win_popup = NodePath("../WinPopUp/Label")
+
+[node name="Sprite2D" type="Sprite2D" parent="Checkpoint4"]
+scale = Vector2(0.8552391, 0.8552391)
+texture = ExtResource("5_lk5vc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Checkpoint4"]
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 

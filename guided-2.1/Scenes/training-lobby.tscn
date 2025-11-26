@@ -78,7 +78,7 @@ position = Vector2(425, 1536)
 scale = Vector2(6, 6)
 collision_mask = 6
 script = ExtResource("3_sm7ft")
-target_scene_path = "uid://dd8764hawiiw0"
+target_scene_path = "uid://cufi2nhujvqko"
 
 [node name="Sprite2D" type="Sprite2D" parent="TrainingDashRoom"]
 scale = Vector2(0.1, 0.1)
