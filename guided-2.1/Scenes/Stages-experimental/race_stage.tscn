@@ -29,10 +29,11 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="FinishLine" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
-position = Vector2(3206, 935)
+position = Vector2(3206, 460)
 collision_mask = 6
 script = ExtResource("5_b8niy")
 lose_popup = NodePath("../LosePopUp/Label")
+is_active = false
 
 [node name="Sprite2D" type="Sprite2D" parent="FinishLine"]
 scale = Vector2(0.06138251, 0.06138251)
@@ -42,11 +43,12 @@ texture = ExtResource("4_34coe")
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
-[node name="Checkpoint1" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+[node name="Checkpoint1" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup", "win_popup")]
 position = Vector2(1221, 935)
 collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
+win_popup = NodePath("../WinPopUp/Label")
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint1"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -56,11 +58,12 @@ texture = ExtResource("5_lk5vc")
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
-[node name="Checkpoint2" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+[node name="Checkpoint2" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup", "win_popup")]
 position = Vector2(1920, 935)
 collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
+win_popup = NodePath("../WinPopUp/Label")
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint2"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -70,11 +73,12 @@ texture = ExtResource("5_lk5vc")
 scale = Vector2(5.551097, 5.551097)
 shape = SubResource("RectangleShape2D_bq65n")
 
-[node name="Checkpoint3" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup")]
+[node name="Checkpoint3" type="Area2D" parent="." node_paths=PackedStringArray("lose_popup", "win_popup")]
 position = Vector2(2625, 935)
 collision_mask = 6
 script = ExtResource("6_8l4yt")
 lose_popup = NodePath("../LosePopUp/Label")
+win_popup = NodePath("../WinPopUp/Label")
 
 [node name="Sprite2D" type="Sprite2D" parent="Checkpoint3"]
 scale = Vector2(0.8552391, 0.8552391)
@@ -123,6 +127,23 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 60
 text = "kamu kalah!"
+
+[node name="WinPopUp" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="WinPopUp"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -178.0
+offset_top = -41.5
+offset_right = 178.0
+offset_bottom = 41.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+text = "kamu menang!"
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 scale = Vector2(6, 6)
