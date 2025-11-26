@@ -16,14 +16,28 @@ var skill_dash_unlocked: bool = false
 var skill_double_jump_unlocked: bool = false
 var skill_wall_grab_unlocked: bool = false
 
-# Referensi ke Autoload TransitionScreen (pastikan nama di Project Settings -> Autoloads benar)
-# Menggunakan get_node_or_null agar tidak crash jika lupa dipasang
+### --- SISTEM ONE-TIME DOOR (LOGIKA BARU) ---
+# Array untuk menyimpan ID pintu yang sudah pernah dilewati
+var visited_doors: Array[String] = []
+
+# Referensi ke Autoload TransitionScreen
 @onready var TransitionScreen: Node = get_node_or_null("/root/TransitionScreen") 
 
 func _ready() -> void:
 	print("GameManager (autoload) ready. Waiting for level/player registration...")
 
-# Fungsi untuk membuka skill (dipanggil oleh item/trigger)
+# --- FUNGSI BARU UNTUK PINTU ---
+# Cek apakah pintu dengan ID tertentu sudah pernah dilewati
+func is_door_visited(door_id: String) -> bool:
+	return visited_doors.has(door_id)
+
+# Tandai pintu sudah dilewati (panggil ini saat player berhasil masuk)
+func mark_door_visited(door_id: String) -> void:
+	if door_id != "" and not visited_doors.has(door_id):
+		visited_doors.append(door_id)
+		print("GameManager: Door marked as visited -> ", door_id)
+
+# --- FUNGSI UNLOCK SKILL ---
 func unlock_skill(skill_name: String) -> void:
 	match skill_name:
 		"dash":
@@ -36,25 +50,45 @@ func unlock_skill(skill_name: String) -> void:
 			skill_wall_grab_unlocked = true
 			print("GameManager: Wall Grab Unlocked!")
 
-# Panggil dari level root saat level ready (misal di TheStage.gd _ready):
-# GameManager.register_level(self)
+# Panggil dari level root saat level ready
 func register_level(level_root: Node) -> void:
-	start_position = level_root.get_node_or_null("StartPosition")
+	# 1. Cek apakah ada request spawn ID khusus dari pintu sebelumnya?
+	if next_spawn_id != "":
+		# Cari node di dalam level baru yang namanya SAMA dengan next_spawn_id
+		var specific_point = level_root.get_node_or_null(next_spawn_id)
+		
+		if specific_point:
+			start_position = specific_point
+			print("GameManager: Spawn found by ID -> ", next_spawn_id)
+		else:
+			# Jika tidak ketemu, fallback ke default "StartPosition"
+			print("GameManager: Spawn ID '", next_spawn_id, "' not found. Using default.")
+			start_position = level_root.get_node_or_null("StartPosition")
+			
+		# Reset ID agar tidak terbawa ke level berikutnya
+		next_spawn_id = ""
+		
+	else:
+		# 2. Jika tidak ada request ID (misal start game baru), cari default
+		start_position = level_root.get_node_or_null("StartPosition")
+
 	transition = level_root.get_node_or_null("transition")
 	after_image_container = level_root.get_node_or_null("AfterImageContainer")
 	
 	if not start_position:
-		# push_warning("GameManager: StartPosition not found in level_root")
-		pass
+		push_warning("GameManager: No spawn position found!")
 	
 	print("GameManager: level registered from ", level_root.name)
+	
+	# --- TELEPORT PLAYER KE POSISI ITU ---
+	if player and start_position:
+		player.global_position = start_position.global_position
+
 
 # Panggil dari Player._ready()
-# GameManager.register_player(self)
 func register_player(p: Node) -> void:
 	player = p
 	var cb = Callable(self, "_on_player_create_after_image")
-	# Hindari koneksi ganda
 	if not player.is_connected("create_after_image", cb):
 		player.connect("create_after_image", cb)
 	print("GameManager: player registered:", player)
@@ -66,7 +100,7 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 		s.global_position = spawn_pos
 		s.flip_h = is_flipped
 		
-		s.scale = Vector2(6, 6) # Sesuaikan scale dengan pixel art Anda (jika perlu)
+		s.scale = Vector2(6, 6) 
 		
 		after_image_container.add_child(s)
 		s.modulate = Color(0.5,0.7,1,0.7)
@@ -74,11 +108,9 @@ func _on_player_create_after_image(texture, spawn_pos, is_flipped) -> void:
 		tw.tween_property(s, "modulate", Color(0.5,0.7,1,0), 0.4)
 		tw.tween_callback(Callable(s, "queue_free"))
 	else:
-		# Warning ini mungkin muncul saat transisi scene, aman diabaikan sesekali
-		# push_warning("GameManager: no after_image_container set") 
 		pass
 
-# Fungsi generik untuk ganti scene (tanpa transisi khusus)
+# Fungsi generik untuk ganti scene
 func request_change_scene(path: String, spawn_id: String = "") -> void:
 	if path == "" or not ResourceLoader.exists(path):
 		push_warning("GameManager: invalid path: " + str(path))
@@ -86,14 +118,11 @@ func request_change_scene(path: String, spawn_id: String = "") -> void:
 		
 	next_spawn_id = spawn_id
 
-	# optional: freeze player and stop physics to avoid physics-callback removal issues
 	if player:
 		if player.has_method("freeze"):
 			player.freeze()
-		# stop player's physics to be safe
 		player.set_physics_process(false)
 
-	# do actual change deferred to avoid "Removing a CollisionObject during physics callback" error
 	call_deferred("_do_change_scene", path)
 
 func _do_change_scene(path: String) -> void:
@@ -101,8 +130,7 @@ func _do_change_scene(path: String) -> void:
 	get_tree().change_scene_to_file(path)
 	
 
-# FUNGSI BARU: FUNGSI PEMANGGIL TRANISI SAAT MENANG/KALAH
-# Dipanggil oleh TheStage.gd atau Checkpoint saat kondisi menang/kalah terpenuhi
+# FUNGSI PEMANGGIL TRANISI SAAT MENANG/KALAH
 func request_change_scene_with_transition(did_player_win: bool, current_stage_id: int = 1) -> void:
 	var target_scene: String
 	
@@ -111,18 +139,15 @@ func request_change_scene_with_transition(did_player_win: bool, current_stage_id
 	else:
 		target_scene = "res://Scenes/Dialog/player_kalah.tscn"
 		
-	# 1. Coba pakai variabel @onready (Paling cepat)
 	if TransitionScreen and TransitionScreen.has_method("transition_to_scene"):
 		TransitionScreen.transition_to_scene(target_scene)
 		return
 
-	# 2. Coba cari manual (Fallback jika @onready gagal/null saat init)
 	var ts_manual = get_node_or_null("/root/TransitionScreen")
 	if ts_manual and ts_manual.has_method("transition_to_scene"):
 		ts_manual.transition_to_scene(target_scene)
 		return
 
-	# 3. Fallback terakhir: Ganti scene kasar (tanpa transisi)
 	push_warning("GameManager: TransitionScreen tidak ditemukan. Menjalankan fallback deferred change.")
 	call_deferred("_do_change_scene", target_scene)
 

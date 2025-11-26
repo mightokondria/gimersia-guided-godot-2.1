@@ -16,7 +16,7 @@ size = Vector2(12, 12)
 
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
 script = ExtResource("1_qrfnx")
-StartPosition = NodePath("StartPosition")
+StartPosition = NodePath("StartPositionDash")
 player = NodePath("player")
 
 [node name="SkillUnlocker" type="Area2D" parent="."]
@@ -28,7 +28,7 @@ position = Vector2(674.2079, 336.7079)
 scale = Vector2(9.258424, 9.258424)
 shape = SubResource("RectangleShape2D_x7lik")
 
-[node name="StartPosition" type="Marker2D" parent="."]
+[node name="StartPositionDash" type="Marker2D" parent="."]
 position = Vector2(557, 477)
 
 [node name="Labels" type="Node2D" parent="."]

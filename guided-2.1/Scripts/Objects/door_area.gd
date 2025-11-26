@@ -7,6 +7,8 @@ extends Area2D
 @export var require_item: String = ""       # Contoh: "key_red"
 @export var interact_only: bool = false     # Jika true, harus tekan tombol (UI Accept)
 @export var prompt_text: String = "Press X to enter"
+@export var door_id: String = ""  
+@export var target_spawn_id: String = ""
 
 var _triggered := false
 var _player_in_area : Node = null
@@ -48,35 +50,48 @@ func _input(event):
 		_try_trigger(_player_in_area)
 
 func _try_trigger(player_node: Node) -> void:
+	# --- PERUBAHAN DI SINI ---
+	# 1. PRIORTAS UTAMA: Cek ke GameManager dulu!
+	# Meskipun _triggered sedang true (misal baru saja masuk), 
+	# kalau data di GameManager bilang sudah visited, kita harus tolak.
+	if door_id != "" and GameManager.is_door_visited(door_id):
+		print("Door: pintu ini sudah dikunci") # Debug muncul disini
+		return # Stop, jangan lakukan apa-apa lagi
+
+	# 2. Baru cek apakah sedang dalam proses trigger (debounce)
 	if _triggered:
 		return
 		
+	# 3. Logika Kunci Biasa (Item/Inspector)
 	if locked:
-		# Cek inventory via GameManager (pastikan fungsi has_item ada di GameManager)
-		# Jika belum punya fungsi has_item, logika ini akan diskip atau error
 		if require_item != "" and GameManager and GameManager.has_method("has_item"):
 			if GameManager.has_item(require_item):
 				locked = false
 				print("Door: Unlocked with " + require_item)
 			else:
 				print("Door: Terkunci! Butuh " + require_item)
-				# UI.show_message("Pintu terkunci")
 				return
-		elif locked:
+		else:
 			print("Door: Terkunci permanen.")
 			return
 
-	_triggered = true
-	print("Door: Pindah ke scene -> ", target_scene_path)
+	# 4. Logika Sukses Masuk
+	print("Door: Masuk ke pintu!")
 	
-	# --- PANGGIL GAME MANAGER ---
-	if GameManager:
-		# FIX: Jangan lupa kirim spawn_id agar player muncul di pintu yang benar
-		GameManager.request_change_scene(target_scene_path, spawn_id)
+	# Simpan data bahwa pintu ini sudah dilewati
+	if door_id != "":
+		GameManager.mark_door_visited(door_id)
+	
+	_triggered = true
+	
+	# Panggil fungsi ganti scene di GameManager
+	if target_scene_path != "":
+		print("Door: Requesting scene change to -> ", target_scene_path)
+		GameManager.request_change_scene(target_scene_path, target_spawn_id)
 	else:
-		# Fallback jika GameManager error
-		call_deferred("_fallback_change", target_scene_path, spawn_id)
-
+		push_error("Door Error: target_scene_path kosong! Cek Inspector.")
+	
+	
 func _fallback_change(path: String, spawn: String) -> void:
 	if ResourceLoader.exists(path):
 		# FIX: 'has_variable' tidak ada di GDScript, gunakan syntax 'in'

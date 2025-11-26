@@ -79,6 +79,10 @@ scale = Vector2(6, 6)
 collision_mask = 6
 script = ExtResource("3_sm7ft")
 target_scene_path = "uid://cufi2nhujvqko"
+spawn_id = "StartPositionDash"
+require_item = "ijo"
+door_id = "door_dash_training"
+target_spawn_id = "StartPositionDash"
 
 [node name="Sprite2D" type="Sprite2D" parent="TrainingDashRoom"]
 scale = Vector2(0.1, 0.1)
@@ -93,6 +97,10 @@ scale = Vector2(6, 6)
 collision_mask = 6
 script = ExtResource("3_sm7ft")
 target_scene_path = "uid://ba5piuchhtknk"
+spawn_id = "StartPositionWall"
+require_item = "biru"
+door_id = "door_wall_training"
+target_spawn_id = "StartPositionWall"
 
 [node name="Sprite2D" type="Sprite2D" parent="TrainingWallRoom"]
 scale = Vector2(0.1, 0.1)
@@ -107,6 +115,10 @@ scale = Vector2(6, 6)
 collision_mask = 6
 script = ExtResource("3_sm7ft")
 target_scene_path = "uid://bh1x3din8sciy"
+spawn_id = "StartPositionJump"
+require_item = "merah"
+door_id = "door_double_jump_training"
+target_spawn_id = "StartPositionJump"
 
 [node name="Sprite2D" type="Sprite2D" parent="TrainingDoubleJumpRoom"]
 scale = Vector2(0.1, 0.1)

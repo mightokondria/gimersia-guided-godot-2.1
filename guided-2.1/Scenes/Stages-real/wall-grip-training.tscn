@@ -16,7 +16,7 @@ size = Vector2(12, 12)
 
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("StartPosition", "player")]
 script = ExtResource("1_081r1")
-StartPosition = NodePath("StartPosition")
+StartPosition = NodePath("StartPositionWall")
 player = NodePath("player")
 
 [node name="SkillUnlocker" type="Area2D" parent="."]
@@ -162,7 +162,7 @@ text = "duri"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="StartPosition" type="Marker2D" parent="."]
+[node name="StartPositionWall" type="Marker2D" parent="."]
 position = Vector2(858, 581)
 
 [node name="AfterImageContainer" type="Node2D" parent="."]
