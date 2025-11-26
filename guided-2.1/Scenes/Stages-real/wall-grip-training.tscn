@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=4 uid="uid://ba5piuchhtknk"]
+[gd_scene load_steps=10 format=4 uid="uid://ba5piuchhtknk"]
 
 [ext_resource type="TileSet" uid="uid://c8fxdp1f6gf34" path="res://Resources/Evironments/dojo_wall_demo.tres" id="1_5ycar"]
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_081r1"]
@@ -6,6 +6,10 @@
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="3_85v46"]
 [ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="4_ujb7c"]
 [ext_resource type="PackedScene" uid="uid://dtu2q1v2470ks" path="res://Scenes/Objects/spike.tscn" id="5_ujb7c"]
+[ext_resource type="Script" uid="uid://d27670n2xbgqc" path="res://Scenes/Stages-real/skill_unlocker.gd" id="7_t35rr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d5q81"]
+size = Vector2(165.64203, 92.735466)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_081r1"]
 size = Vector2(12, 12)
@@ -14,6 +18,17 @@ size = Vector2(12, 12)
 script = ExtResource("1_081r1")
 StartPosition = NodePath("StartPosition")
 player = NodePath("player")
+
+[node name="SkillUnlocker" type="Area2D" parent="."]
+position = Vector2(230, 304)
+collision_mask = 6
+script = ExtResource("7_t35rr")
+skill_to_unlock = "wall_grab"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SkillUnlocker"]
+position = Vector2(674.2079, 336.7079)
+scale = Vector2(9.258424, 9.258424)
+shape = SubResource("RectangleShape2D_d5q81")
 
 [node name="Spike" type="Node2D" parent="."]
 position = Vector2(-76, -2585)

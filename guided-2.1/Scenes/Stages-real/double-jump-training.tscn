@@ -1,11 +1,15 @@
-[gd_scene load_steps=8 format=4 uid="uid://bh1x3din8sciy"]
+[gd_scene load_steps=10 format=4 uid="uid://bh1x3din8sciy"]
 
 [ext_resource type="Script" uid="uid://bukgn4d1b70d2" path="res://Scripts/Stages/stage_manager.gd" id="1_blto0"]
 [ext_resource type="TileSet" uid="uid://c8fxdp1f6gf34" path="res://Resources/Evironments/dojo_wall_demo.tres" id="1_w6rr5"]
 [ext_resource type="PackedScene" uid="uid://dtu2q1v2470ks" path="res://Scenes/Objects/spike.tscn" id="2_iev3r"]
 [ext_resource type="PackedScene" uid="uid://2ugon3ctdlhh" path="res://Scenes/player.tscn" id="2_vf8n1"]
+[ext_resource type="Script" uid="uid://d27670n2xbgqc" path="res://Scenes/Stages-real/skill_unlocker.gd" id="2_ycjft"]
 [ext_resource type="Script" uid="uid://boa47wvahmbfe" path="res://Scripts/Objects/door_area.gd" id="3_km06p"]
 [ext_resource type="Texture2D" uid="uid://c1bue5sfts8dd" path="res://icon.svg" id="4_blto0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_13k4q"]
+size = Vector2(165.64203, 92.735466)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iev3r"]
 size = Vector2(12, 12)
@@ -14,6 +18,17 @@ size = Vector2(12, 12)
 script = ExtResource("1_blto0")
 StartPosition = NodePath("StartPosition")
 player = NodePath("player")
+
+[node name="SkillUnlocker" type="Area2D" parent="."]
+position = Vector2(-100, 358)
+collision_mask = 6
+script = ExtResource("2_ycjft")
+skill_to_unlock = "double_jump"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SkillUnlocker"]
+position = Vector2(674.2079, 336.7079)
+scale = Vector2(9.258424, 9.258424)
+shape = SubResource("RectangleShape2D_13k4q")
 
 [node name="Spike" type="Node2D" parent="."]
 position = Vector2(790, -3493)
@@ -176,56 +191,6 @@ position = Vector2(883, 0)
 
 [node name="Spike4" type="Node2D" parent="."]
 position = Vector2(-286, -5703)
-
-[node name="Spike" parent="Spike4" instance=ExtResource("2_iev3r")]
-
-[node name="Spike2" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(44, 0)
-
-[node name="Spike3" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(87, 0)
-
-[node name="Spike4" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(131, 0)
-
-[node name="Spike5" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(174, 0)
-
-[node name="Spike6" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(218, 0)
-
-[node name="Spike7" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(261, 0)
-
-[node name="Spike8" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(305, 0)
-
-[node name="Spike9" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(350, 0)
-
-[node name="Spike10" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(394, 0)
-
-[node name="Spike11" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(437, 0)
-
-[node name="Spike12" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(481, 0)
-
-[node name="Spike13" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(527, 0)
-
-[node name="Spike14" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(572, 0)
-
-[node name="Spike15" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(615, 0)
-
-[node name="Spike16" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(659, 0)
-
-[node name="Spike17" parent="Spike4" instance=ExtResource("2_iev3r")]
-position = Vector2(705, 0)
 
 [node name="Spike18" parent="Spike4" instance=ExtResource("2_iev3r")]
 position = Vector2(750, 0)
