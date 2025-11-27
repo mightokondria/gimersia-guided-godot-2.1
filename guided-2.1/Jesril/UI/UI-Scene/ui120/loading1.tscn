@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cvx76l017jneh"]
 
-[ext_resource type="Script" uid="uid://c720veeugp70s" path="res://Jesril/UI/UI-Script/loading_1.gd" id="1_li3qo"]
+[ext_resource type="Script" uid="uid://c720veeugp70s" path="res://Jesril2/UI/UI-Script/loading_1.gd" id="1_li3qo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g87h0"]
 bg_color = Color(1, 1, 1, 1)

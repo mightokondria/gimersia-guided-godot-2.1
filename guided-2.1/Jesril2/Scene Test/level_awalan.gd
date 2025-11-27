@@ -11,7 +11,12 @@ var bgm_gameplay = preload("res://Audio/BGM/outdoor_background_music_final.mp3")
 
 
 func _ready():
-	AudioManager.play_music(bgm_gameplay)
+		# 2. PANGGIL AUDIO MANAGER
+	# Karena AudioManager adalah Autoload, dia bisa dipanggil dari mana saja
+	if AudioManager:
+		AudioManager.play_music(bgm_gameplay)
+	else:
+		print("Error: AudioManager belum diload di Project Settings -> Globals")
 
 func _on_cutscene_trigger_body_entered(body):
 	if body == player:

@@ -5,7 +5,18 @@ extends Control
 @onready var label = $MarginContainer/VBoxContainer/Label
 @onready var label2 = $MarginContainer/VBoxContainer/Label2
 
+var menu_music = preload("res://Audio/BGM/indoor_bgm.mp3") 
+
+
 func _ready():
+	
+		# 2. PANGGIL AUDIO MANAGER
+	# Karena AudioManager adalah Autoload, dia bisa dipanggil dari mana saja
+	if AudioManager:
+		AudioManager.play_music(menu_music)
+	else:
+		print("Error: AudioManager belum diload di Project Settings -> Globals")
+	
 	# Set alpha jadi 0 dulu (invisible)
 	modulate.a = 0
 	

@@ -1,8 +1,16 @@
 extends Control
+@onready var music: AudioStreamPlayer = $AudioStreamPlayer2D
 
+var menu_music = preload("res://Audio/BGM/indoor_bgm.mp3") 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+		# 2. PANGGIL AUDIO MANAGER
+	# Karena AudioManager adalah Autoload, dia bisa dipanggil dari mana saja
+	if AudioManager:
+		AudioManager.play_music(menu_music)
+	else:
+		print("Error: AudioManager belum diload di Project Settings -> Globals")
 	modulate.a = 0
 	
 	# Fade in animation

@@ -4,12 +4,6 @@ extends Node
 @onready var sfx_player: AudioStreamPlayer = $SFXPlayer
 
 
-#List SFX
-var dash1 = preload("res://Audio/SFX/dash_001.wav")
-var dash2 = preload("res://Audio/SFX/dash_002.wav")
-var double_jump = preload("res://Audio/SFX/double jump.wav")
-var jump = preload("res://Audio/SFX/jump.wav")
-var run = preload("res://Audio/SFX/lari (outdoor).wav")
 
 
 
