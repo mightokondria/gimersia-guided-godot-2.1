@@ -9,7 +9,7 @@ var ReplayManager = null
 const scaling: float = 6.0
 
 # --- Variabel Gerakan ---
-const SPEED: float = 100.0 * scaling # Sesuai request Anda (100.0)
+const SPEED: float = 100.0 * scaling 
 const JUMP_VELOCITY: float = -220.0 * scaling
 
 # --- Variabel Double Jump & Wall ---
@@ -26,7 +26,6 @@ const DASH_DURATION: float = 0.15
 const DASH_COOLDOWN_TIME: float = 0.5 
 
 # Variabel 'can_dash' lokal dihapus, diganti logic GameManager
-# Variabel 'has_dash' tetap ada untuk cooldown/reset di udara
 var is_dashing: bool = false
 var has_dash: bool = true
 
@@ -48,6 +47,15 @@ var is_wall_jumping: bool = false
 @onready var wall_jump_timer: Timer = $WallJumpTimer
 @onready var dash_cooldown_timer: Timer = $DashCooldownTimer
 
+# --- Audio Nodes ---
+@onready var sfx_stream_player: AudioStreamPlayer = $AudioStreamPlayer
+
+# --- List SFX Preloads ---
+var dash1 = preload("res://Audio/SFX/dash_001.wav")
+var dash2 = preload("res://Audio/SFX/dash_002.wav")
+var double_jump_sfx = preload("res://Audio/SFX/double jump.wav")
+var jump_sfx = preload("res://Audio/SFX/jump.wav")
+
 func _ready() -> void:
 	# Register player to GameManager
 	if has_node("/root/GameManager"):
@@ -60,7 +68,7 @@ func _ready() -> void:
 	add_to_group("player")
 	set_process_input(true)
 	
-	# Update visual orb di awal berdasarkan skill yang sudah unlocked
+	# Update visual orb di awal
 	if dash_orb:
 		dash_orb.visible = GameManager.skill_dash_unlocked
 
@@ -68,7 +76,7 @@ func _input(event: InputEvent) -> void:
 	if not controls_enabled:
 		return
 
-	# Debug toggle keys (Mengubah skill di GameManager secara live)
+	# Debug toggle keys
 	if event is InputEventKey and event.pressed:
 		match event.keycode:
 			KEY_1:
@@ -85,23 +93,24 @@ func _input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	var on_floor: bool = is_on_floor()
 	var on_wall: bool = is_on_wall()
-
+	
 	if not is_dashing:
 		if controls_enabled:
-			# --- Gravity & Wall Slide Logic ---
+			# --- [UBAH] LOGIKA GRAVITASI & WALL SLIDE ---
 			if not on_floor:
 				var wall_normal: Vector2 = get_wall_normal()
+				
+				# [BARU] Cek apakah tombol BAWAH ditekan
 				var is_pressing_down: bool = Input.is_action_pressed("ui_down")
 
 				# Syarat wall slide:
-				# Di dinding, jatuh, tidak wall jump, SKILL AKTIF, dan tidak tekan bawah.
-				# Menggunakan GameManager.skill_wall_grab_unlocked
+				# Di dinding, jatuh, tidak wall jump, SKILL AKTIF, dan TIDAK tekan bawah.
 				if on_wall and velocity.y > 0 and not is_wall_jumping and GameManager.skill_wall_grab_unlocked and not is_pressing_down:
 					velocity.y = WALL_SLIDE_SPEED
 					is_wall_sliding = true
 					is_double_jumping = false
 
-					# Sticky Force
+					# Sticky Force: Dorong ke dinding agar tidak lepas
 					velocity.x = -wall_normal.x * 10.0
 
 					# Visual flip
@@ -121,9 +130,14 @@ func _physics_process(delta: float) -> void:
 					is_wall_sliding = false
 			else:
 				is_wall_sliding = false
+			# ---------------------------------------------------
 
 			# Jump input handling
 			if Input.is_action_just_pressed("jump"):
+				# Play SFX Lompat
+				sfx_stream_player.stream = jump_sfx
+				sfx_stream_player.play()
+				
 				if on_floor or not coyote_timer.is_stopped():
 					jump()
 				# Cek skill wall grab untuk wall jump
@@ -137,25 +151,32 @@ func _physics_process(delta: float) -> void:
 
 			# Left / Right movement
 			var direction: float = Input.get_axis("ui_left", "ui_right")
-
+			
+			# [PENTING] Blok ini mencegah pemain bergerak menjauh saat sedang grip dinding
 			if not is_wall_jumping and not is_wall_sliding:
-				if direction != 0.0:
+				if direction:
 					velocity.x = direction * SPEED
-					if direction < 0.0:
+					
+					if direction < 0:
 						animated_sprite.flip_h = true
 						dash_orb.orbit_offset.x = abs(dash_orb.orbit_offset.x)
 					else:
 						animated_sprite.flip_h = false
 						dash_orb.orbit_offset.x = -abs(dash_orb.orbit_offset.x)
+					
 				else:
-					velocity.x = move_toward(velocity.x, 0.0, SPEED)
+					velocity.x = move_toward(velocity.x, 0, SPEED)
+						
 			elif is_wall_jumping:
 				velocity.x = move_toward(velocity.x, 0.0, 5.0)
 
 	# --- Dash handling ---
-	# Cek GameManager.skill_dash_unlocked
 	if controls_enabled and Input.is_action_just_pressed("dash") and GameManager.skill_dash_unlocked and not is_dashing and has_dash and dash_cooldown_timer.is_stopped():
+		# Play SFX Dash
+		sfx_stream_player.stream = dash1
+		sfx_stream_player.play()
 		start_dash()
+		
 
 	move_and_slide()
 
@@ -207,6 +228,11 @@ func double_jump() -> void:
 	jump_count += 1
 	is_double_jumping = true
 	is_wall_jumping = false
+	
+	# Play SFX Double Jump (Optional, jika ingin beda suaranya)
+	sfx_stream_player.stream = double_jump_sfx
+	sfx_stream_player.play()
+	
 	animated_sprite.play("double_jump")
 
 func wall_jump() -> void:
@@ -237,7 +263,7 @@ func start_dash() -> void:
 	is_double_jumping = false
 	is_wall_jumping = false
 	velocity.y = 0
-
+	
 	var dash_direction: int = 1 if not animated_sprite.flip_h else -1
 	velocity.x = dash_direction * DASH_SPEED
 

@@ -1,0 +1,27 @@
+extends Control
+
+# Sesuaikan dengan struktur node lu
+@onready var panel = $MarginContainer/VBoxContainer/Panel
+@onready var label = $MarginContainer/VBoxContainer/Label
+@onready var label2 = $MarginContainer/VBoxContainer/Label2
+# Load file lagu gameplay
+var bgm_gameplay = preload("res://Audio/BGM/indoor_bgm.mp3")
+
+func _ready():
+	AudioManager.play_music(bgm_gameplay)
+	# Set alpha jadi 0 dulu (invisible)
+	modulate.a = 0
+	
+	# Fade in animation
+	var tween = create_tween()
+	tween.tween_property(self, "modulate:a", 1.0, 1.0)  # Fade in 1 detik
+	tween.tween_interval(2.5)  # Tahan 2.5 detik
+	tween.tween_property(self, "modulate:a", 0.0, 1.0)  # Fade out 1 detik
+	tween.tween_callback(_go_to_main_menu)
+
+func _go_to_main_menu():
+	# Pakai ini kalau autoload udah setup
+	#SceneManager.change_scene("res://Abscene/Mainmenu2.tscn")
+	
+	# ATAU pakai ini kalau belum setup autoload:
+	get_tree().change_scene_to_file("res://Jesril/UI/UI-Scene/ui120/Mainmenu2.tscn")

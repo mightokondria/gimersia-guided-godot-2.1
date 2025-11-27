@@ -1,0 +1,141 @@
+[gd_scene load_steps=8 format=3 uid="uid://63nwtkhikvmu"]
+
+[ext_resource type="Script" uid="uid://c3qer1q5u1tpv" path="res://Jesril/UI/UI-Script/dialog_popup.gd" id="1_brh66"]
+[ext_resource type="Texture2D" uid="uid://caqtcla7sr2ea" path="res://Jesril/jesril_assets/player_happy.png" id="1_v3vk5"]
+[ext_resource type="Texture2D" uid="uid://cqwlfuplls1iq" path="res://Jesril/jesril_assets/sensei_happy.png" id="2_brh66"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v3vk5"]
+bg_color = Color(0.12156863, 0.12156863, 0.1764706, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0oeqn"]
+bg_color = Color(0.95686275, 0.84313726, 0.34509805, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d5ohx"]
+texture = ExtResource("1_v3vk5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eh2id"]
+texture = ExtResource("2_brh66")
+
+[node name="DialogUi" type="CanvasLayer"]
+script = ExtResource("1_brh66")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1199.0
+offset_bottom = -840.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 0
+
+[node name="Cat" type="Panel" parent="Control/MarginContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3vk5")
+
+[node name="bgpic" type="Panel" parent="Control/MarginContainer/Cat"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 170.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_0oeqn")
+
+[node name="catpic" type="Panel" parent="Control/MarginContainer/Cat"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 20.0
+offset_right = 206.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_d5ohx")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/Cat"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 208.0
+offset_right = -41.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/MarginContainer/Cat/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+text = "asdajdjfskmcs ajsdsd jjsa  sj  jmallssc"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="fish" type="Panel" parent="Control/MarginContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_v3vk5")
+
+[node name="bgpic" type="Panel" parent="Control/MarginContainer/fish"]
+layout_mode = 0
+offset_left = 699.0
+offset_top = 20.0
+offset_right = 849.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_0oeqn")
+
+[node name="fishpic2" type="Panel" parent="Control/MarginContainer/fish"]
+layout_mode = 0
+offset_left = 688.0
+offset_top = 18.0
+offset_right = 850.0
+offset_bottom = 180.0
+theme_override_styles/panel = SubResource("StyleBoxTexture_eh2id")
+
+[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/fish"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 38.0
+offset_right = -208.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/MarginContainer/fish/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+text = "asdajdjfskmcs ajsdsd jjsa  sj  jmallssc"
+horizontal_alignment = 1
+vertical_alignment = 1

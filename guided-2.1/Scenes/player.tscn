@@ -264,6 +264,10 @@ one_shot = true
 [node name="DashCooldownTimer" type="Timer" parent="."]
 one_shot = true
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -9.627
+bus = &"SFX"
+
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="timeout" from="DashTimer" to="." method="_on_dash_timer_timeout"]
 [connection signal="timeout" from="AfterImageTimer" to="." method="_on_after_image_timer_timeout"]
