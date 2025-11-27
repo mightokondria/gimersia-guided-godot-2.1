@@ -14,7 +14,7 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_start_pressed() -> void:
-	get_tree().change_scene_to_file("res://UI/UI-Script/Loading.tscn")
+	get_tree().change_scene_to_file("res://Jesril2/UI/UI-Scene/ui120/Loading.tscn")
 
 func _on_settings_pressed() -> void:
 	pass # Replace with function body.

@@ -1,130 +1,154 @@
 extends Node2D
 
-# --- KONFIGURASI NODE (Drag & Drop dari Scene Tree ke Inspector) ---
+# --- KONFIGURASI ---
 @export_group("Required Nodes")
-@export var StartPosition: Marker2D       # Posisi awal Player
-@export var player: CharacterBody2D       # Node Player Asli
-@export var FinishArea: Area2D            # Area Garis Finish (Opsional untuk deteksi jarak)
-@export var CountdownLabel: Label         # Label UI untuk angka 3, 2, 1 (Wajib ada di CanvasLayer)
+@export var player: CharacterBody2D        
+@export var CountdownLabel: Label          
+@export var FinishArea: Area2D             
 
-@export_group("Replay Settings")
-@export var custom_replay_id: String = "" # Isi manual jika ingin memaksa load file tertentu (misal "BossFight")
+@export_group("Ghost Settings")
+# 1. TARIK FILE .JSON DI SINI UNTUK DIMAINKAN GHOST
+# 2. DAN FILE INI JUGA YANG AKAN DITIMPA JIKA KAMU TEKAN 'O'
+@export_file("*.json") var ghost_source_file: String = ""
 
 # --- VARIABEL INTERNAL ---
 var _race_started = false
 var _ghost_finished = false
+var _replay_index = 0       
+var _ghost_node: Node2D = null 
+var _replay_data = [] 
 
 func _ready():
-	print("\n--- LEVEL INIT ---")
+	print("\n--- LEVEL INIT (RECORD & PLAY MODE) ---")
 	
-	# 1. REGISTRASI LEVEL (Agar fitur After Image & Respawn Duri jalan)
-	if GameManager:
-		if has_node("AfterImageContainer"):
-			GameManager.register_level(self)
-		else:
-			push_warning("Level: Lupa nambahin node 'AfterImageContainer'! Efek bayangan gak bakal muncul.")
+	# 1. Registrasi Level
+	var GM = get_node_or_null("/root/GameManager")
+	if GM and has_node("AfterImageContainer"):
+		GM.register_level(self)
 
-	# 2. BEKUKAN PLAYER (Freeze)
-	# Kita kunci player biar nggak curi start sebelum hitungan selesai
+	# 2. Load Data Ghost (Untuk Playback)
+	load_ghost_data_from_file()
+
+	# 3. Setup Node Ghost
+	_ghost_node = get_node_or_null("GhostPlayer")
+	if _ghost_node:
+		# Posisikan di frame awal
+		if not _replay_data.is_empty():
+			var frame0 = _replay_data[0]
+			var p = frame0["p"] 
+			_ghost_node.global_position = Vector2(p[0], p[1])
+			_ghost_node.modulate.a = 0.5 
+	else:
+		print("Level: GhostPlayer tidak ditemukan (Mode Solo/Recording).")
+
+	# 4. Freeze Player
 	if player and player.has_method("freeze"):
 		player.freeze()
-		print("Level: Player dikunci (Freeze).")
 	
-	# 3. PERSIAPAN UI COUNTDOWN
+	# 5. UI Countdown
+	start_countdown_sequence()
+
+func _input(event):
+	# --- FITUR REKAM DEVELOPER ---
+	# Tekan 'O' kapan saja untuk menyimpan rekamam saat ini ke file res://
+	if event is InputEventKey and event.pressed and event.keycode == KEY_O:
+		save_recording_to_res()
+
+# --- FUNGSI SIMPAN (DEV TOOL) ---
+func save_recording_to_res():
+	var RM = get_node_or_null("/root/ReplayManager")
+	if not RM: 
+		print("Error: ReplayManager tidak ada.")
+		return
+		
+	var data = RM.recorded_data
+	if data.is_empty():
+		print("Level: Data rekaman masih kosong/sedikit.")
+		return
+		
+	# Tentukan path file
+	var path = ghost_source_file
+	if path == "":
+		# Default name jika kosong
+		path = "res://replay_" + self.name + ".json"
+	
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify(data))
+		file.close()
+		print(">>> SUKSES! Rekaman disimpan ke: ", path)
+		print(">>> PENTING: Klik Kanan Folder -> 'Rescan' agar file muncul/update.")
+	else:
+		push_error("Gagal menulis file ke " + path)
+
+# --- FUNGSI BACA (PUPPET MASTER) ---
+func load_ghost_data_from_file():
+	if ghost_source_file != "" and FileAccess.file_exists(ghost_source_file):
+		var file = FileAccess.open(ghost_source_file, FileAccess.READ)
+		var json = JSON.new()
+		if json.parse(file.get_as_text()) == OK:
+			_replay_data = json.data
+			print("Level: Data Ghost dimuat. Frame count: ", _replay_data.size())
+		else:
+			print("Level: File JSON rusak/kosong.")
+	else:
+		print("Level: Tidak ada file ghost yang di-load (Mode Rekam Baru).")
+
+func start_countdown_sequence():
 	if CountdownLabel:
 		CountdownLabel.text = "READY?"
 		CountdownLabel.visible = true
-	else:
-		push_warning("Level: CountdownLabel belum dipasang di Inspector!")
-
-	# 4. LOAD DATA GHOST (TAPI JANGAN JALAN DULU)
-	if ReplayManager:
-		# Beri jeda sangat singkat agar node GhostPlayer siap menerima sinyal
-		await get_tree().create_timer(0.1).timeout
-		
-		# Tentukan ID mana yang mau di-load
-		var id_to_use = self.name # Default: Nama Node Root (misal "Level1")
-		
-		# Cek override manual
-		if custom_replay_id != "":
-			id_to_use = custom_replay_id
-		# Cek jika ini scene utama
-		elif get_tree().current_scene == self:
-			id_to_use = get_tree().current_scene.name
-			
-		print("Level: Meminta Ghost memuat data [", id_to_use, "]...")
-		
-		# Panggil start_playback. 
-		# Ghost akan menerima data tapi DIAM SAJA karena di script ghost_player.gd 
-		# variabel 'is_race_started' masih false.
-		ReplayManager.start_playback(id_to_use)
-		
-		# 5. MULAI HITUNG MUNDUR
-		start_countdown_sequence()
-
-# --- LOGIKA COUNTDOWN ---
-func start_countdown_sequence():
-	if not CountdownLabel:
-		# Kalau lupa pasang label, langsung gas aja biar gak softlock
-		print("Level: Label gak ada, skip countdown.")
-		start_race()
-		return
-		
-	# Tunggu 1 detik untuk tulisan "READY?"
-	await get_tree().create_timer(1.0).timeout
+		await get_tree().create_timer(1.0).timeout
+		CountdownLabel.text = "3"
+		await get_tree().create_timer(1.0).timeout
+		CountdownLabel.text = "2"
+		await get_tree().create_timer(1.0).timeout
+		CountdownLabel.text = "1"
+		await get_tree().create_timer(1.0).timeout
+		CountdownLabel.text = "GO!"
+		CountdownLabel.modulate = Color.GREEN
 	
-	# Hitung Mundur
-	CountdownLabel.text = "3"
-	# Suara beep bisa ditaruh di sini (misal: AudioStreamPlayer.play())
-	await get_tree().create_timer(1.0).timeout
-	
-	CountdownLabel.text = "2"
-	await get_tree().create_timer(1.0).timeout
-	
-	CountdownLabel.text = "1"
-	await get_tree().create_timer(1.0).timeout
-	
-	CountdownLabel.text = "GO!"
-	# Modulate warna jadi hijau biar seru
-	CountdownLabel.modulate = Color.GREEN
-	
-	# MULAI BALAPAN!
 	start_race()
 	
-	# Hilangkan tulisan GO setelah 1 detik
-	await get_tree().create_timer(1.0).timeout
-	CountdownLabel.visible = false
+	if CountdownLabel:
+		await get_tree().create_timer(1.0).timeout
+		CountdownLabel.visible = false
 
-# --- LOGIKA START ---
 func start_race():
-	print(">>> 🏁 BALAPAN DIMULAI! 🏁 <<<")
+	print(">>> 🏁 GO! (Recording Auto-Start) 🏁 <<<")
 	_race_started = true
+	_replay_index = 0 
 	
-	# 1. Lepaskan Player
 	if player and player.has_method("unfreeze"):
 		player.unfreeze()
 		
-	# 2. Lepaskan Ghost
-	# Kita cari node bernama "GhostPlayer" di scene ini
-	var ghost = get_node_or_null("GhostPlayer")
-	if ghost:
-		if ghost.has_method("start_race"):
-			ghost.start_race() # Fungsi ini mengubah is_race_started = true di Ghost
-		else:
-			push_warning("Level: Node GhostPlayer ditemukan tapi gak punya fungsi start_race(). Cek script ghost!")
-	else:
-		print("Level: Tidak ada Ghost di scene ini (Mungkin mode latihan sendiri).")
+	# 1. Start Recording Otomatis (PENTING!)
+	var RM = get_node_or_null("/root/ReplayManager")
+	if RM: RM.start_recording(self.name)
 
-# --- LOGIKA LOOPING (Opsional) ---
-func _process(_delta):
-	# Deteksi Jarak Manual (Backup jika Collision Area2D gagal mendeteksi Ghost)
-	# Ini berguna untuk debugging visual di output console
-	if _race_started and not _ghost_finished and FinishArea:
-		var ghost = get_node_or_null("GhostPlayer")
-		if ghost:
-			var distance = ghost.global_position.distance_to(FinishArea.global_position)
+# --- LOGIKA PENGGERAK GHOST ---
+func _physics_process(_delta):
+	# Playback Ghost (Jika ada data)
+	if _race_started and _ghost_node and not _replay_data.is_empty():
+		if _replay_index < _replay_data.size():
+			var frame = _replay_data[_replay_index]
+			var p = frame["p"]
+			_ghost_node.global_position = Vector2(p[0], p[1])
 			
-			# Jika jarak sangat dekat (kurang dari 50 pixel)
-			if distance < 50.0:
-				print("DEBUG: Ghost berada sangat dekat dengan Finish Area (Jarak: ", distance, ")")
-				_ghost_finished = true
+			var sprite = _ghost_node.get_node_or_null("AnimatedSprite2D")
+			if sprite:
+				sprite.flip_h = frame["f"]
+				var anim = frame["a"]
+				if sprite.animation != anim:
+					sprite.play(anim)
+					sprite.frame = frame["i"]
+			
+			_replay_index += 1
+		elif not _ghost_finished:
+			_ghost_finished = true
+			print("Level: Ghost Finish.")
+
+	# Cek Finish
+	if _race_started and FinishArea and _ghost_node:
+		if _ghost_node.global_position.distance_to(FinishArea.global_position) < 50.0 and not _ghost_finished:
+			print("DEBUG: Ghost Menyentuh Garis Finish!")

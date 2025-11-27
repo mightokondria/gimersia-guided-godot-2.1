@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://biom333chcsea"]
 
-[ext_resource type="Script" uid="uid://bb8ucmigvbwch" path="res://Jesril/UI/UI-Script/mainmenu2o.gd" id="1_pq0mk"]
+[ext_resource type="Script" uid="uid://bb8ucmigvbwch" path="res://Jesril2/UI/UI-Script/mainmenu2o.gd" id="1_pq0mk"]
 [ext_resource type="Texture2D" uid="uid://bmtafjcvu3a0a" path="res://Resources/splash-art.png" id="2_hulq8"]
-[ext_resource type="FontFile" uid="uid://ceq88g78nn7mi" path="res://Jesril/UI/UI-Assets/Font/Noto/Noto1/NotoSans-VariableFont_wdth,wght.ttf" id="4_hkou5"]
+[ext_resource type="FontFile" uid="uid://ceq88g78nn7mi" path="res://Jesril2/UI/UI-Assets/Font/Noto/Noto1/NotoSans-VariableFont_wdth,wght.ttf" id="4_hkou5"]
 [ext_resource type="Texture2D" uid="uid://b8axkhvlu0ll3" path="res://Resources/logo-guided.png" id="5_lxvwf"]
-[ext_resource type="FontFile" uid="uid://qpxnhrtofgji" path="res://Jesril/UI/UI-Assets/Font/Noto/static/NotoSans-SemiBold.ttf" id="5_rv6jl"]
+[ext_resource type="FontFile" uid="uid://qpxnhrtofgji" path="res://Jesril2/UI/UI-Assets/Font/Noto/static/NotoSans-SemiBold.ttf" id="5_rv6jl"]
 [ext_resource type="PackedScene" uid="uid://bkdi108wow1gg" path="res://Jesril/UI/UI-Scene/ui120/pause_menu-2.tscn" id="6_lxvwf"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5bve"]

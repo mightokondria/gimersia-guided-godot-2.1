@@ -1,7 +1,7 @@
 # Loading.gd (attach ke root Control dari Loading.tscn)
 extends Control
 
-@export var target_path: String = "res://_Scenes/TheStage.tscn"
+@export var target_path: String = "res://Jesril2/Scene Test/level_awalan.tscn"
 @export var min_display_time: float = 2.0
 @export var threshold: float = 0.12
 
